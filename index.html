@@ -5,23 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Para Ti 💖</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
 <style>
 body{
 margin:0;
 font-family:sans-serif;
 background:#000;
 color:white;
-text-align:center;
 overflow:hidden;
 }
 
+/* animaciones */
+.fadeIn{
+animation:fadeIn .5s forwards;
+}
+.fadeOut{
+animation:fadeOut .4s forwards;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeOut{to{opacity:0;transform:translateY(-20px)}}
+
 /* secciones */
 section{
+position:absolute;
+width:100%;
+height:100%;
 display:none;
-min-height:100vh;
-display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
@@ -39,6 +47,18 @@ background:#ff2e63;
 color:white;
 width:80%;
 max-width:300px;
+font-size:16px;
+}
+
+/* menú */
+#menu button{
+background:#111;
+border:1px solid #ff2e63;
+}
+
+/* bloqueado */
+.locked{
+opacity:.4;
 }
 
 /* corazón */
@@ -46,16 +66,7 @@ max-width:300px;
 font-size:70px;
 animation:beat 1s infinite;
 }
-@keyframes beat{
-50%{transform:scale(1.2)}
-}
-
-/* mapa */
-#map{
-height:250px;
-width:90%;
-border-radius:15px;
-}
+@keyframes beat{50%{transform:scale(1.2)}}
 
 /* overlay */
 #overlay{
@@ -87,64 +98,76 @@ border-radius:20px;
 
 <body>
 
-<!-- DIA 1 -->
-<section id="day1">
-<h1>💌 Día 1</h1>
-<p>Aquí escribe tu carta ❤️</p>
-<button onclick="next('heartSec')">Sentirme</button>
+<!-- MENÚ -->
+<section id="menu" class="active fadeIn">
+<h1>💖 Para Ti</h1>
+
+<div id="daysContainer"></div>
+
 </section>
 
-<section id="heartSec">
-<h2>💓 Tócame</h2>
+<!-- DÍA 1 -->
+<section id="day1">
+<h1>💌 Día 1</h1>
+<p>Aquí tu carta ❤️</p>
+<button onclick="goMenu()">⬅️ Volver</button>
+<button onclick="nextDay()">➡️ Siguiente</button>
+</section>
+
+<!-- DÍA 2 -->
+<section id="day2">
+<h1>🌍 Día 2</h1>
+<p>Estamos lejos pero juntos ❤️</p>
+<button onclick="goMenu()">⬅️ Volver</button>
+<button onclick="nextDay()">➡️ Siguiente</button>
+</section>
+
+<!-- DÍA 3 -->
+<section id="day3">
+<h1>💓 Día 3</h1>
 <div id="heart">❤️</div>
 <p id="count">0</p>
 <p id="msg"></p>
-<p id="extra"></p>
+<button onclick="goMenu()">⬅️ Volver</button>
+<button onclick="nextDay()">➡️ Siguiente</button>
 </section>
 
-<!-- DIA 2 -->
-<section id="day2">
-<h1>🌍 Día 2</h1>
-<div id="map"></div>
-<p id="dist"></p>
-<p>Aquí tu carta bonita 💌</p>
-</section>
-
-<!-- DIA 3 -->
-<section id="day3">
-<h1>😏 Día 3</h1>
-<button onclick="openSecret()">Quiero verte</button>
-</section>
-
-<!-- DIA 4 -->
+<!-- DÍA 4 -->
 <section id="day4">
 <h1>🔥 Día 4</h1>
 <input type="range" id="slider" min="0" max="100">
 <p id="sliderTxt"></p>
 <button id="openBtn" style="display:none;">Abrir</button>
+<button onclick="goMenu()">⬅️ Volver</button>
+<button onclick="nextDay()">➡️ Siguiente</button>
 </section>
 
-<!-- DIA 5 -->
+<!-- DÍA 5 -->
 <section id="day5">
 <h1>🧩 Día 5</h1>
-<p>Aquí puedes poner tu puzzle</p>
+<p>Tu sorpresa aquí 😏</p>
+<button onclick="goMenu()">⬅️ Volver</button>
+<button onclick="nextDay()">➡️ Siguiente</button>
 </section>
 
-<!-- DIA 6 -->
+<!-- DÍA 6 -->
 <section id="day6">
 <h1>💻 Día 6</h1>
 <button onclick="date('peli')">🍿</button>
 <button onclick="date('cena')">🍔</button>
 <button onclick="date('chat')">💬</button>
 <p id="dateMsg"></p>
+<button onclick="goMenu()">⬅️ Volver</button>
+<button onclick="nextDay()">➡️ Siguiente</button>
 </section>
 
-<!-- DIA 7 -->
+<!-- DÍA 7 -->
 <section id="day7">
 <h1>🔐 Día 7</h1>
 <input id="pass" placeholder="contraseña">
 <button onclick="login()">Entrar</button>
 <p id="loginMsg"></p>
+<button onclick="goMenu()">⬅️ Volver</button>
 </section>
 
 <!-- overlay -->
@@ -153,11 +176,13 @@ border-radius:20px;
 <p>solo tú 😏</p>
 </div>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 <script>
 
-// 📅 SISTEMA 7 DÍAS
+// ⚡ DEBUG
+const DEBUG=true;
+let DEBUG_DAY=7;
+
+// tiempo real
 let start=localStorage.getItem("start");
 if(!start){
 start=Date.now();
@@ -165,45 +190,88 @@ localStorage.setItem("start",start);
 }
 
 function getDay(){
+if(DEBUG) return DEBUG_DAY;
 return Math.min(Math.floor((Date.now()-start)/(1000*60*60*24))+1,7);
 }
 
-window.onload=()=>{
-let d=getDay();
-show("day"+d);
+// menú dinámico
+function renderMenu(){
+let container=document.getElementById("daysContainer");
+container.innerHTML="";
+
+let unlocked=getDay();
+
+for(let i=1;i<=7;i++){
+let btn=document.createElement("button");
+
+btn.innerText="Día "+i;
+
+if(i<=unlocked){
+btn.onclick=()=>show("day"+i);
+}else{
+btn.classList.add("locked");
+btn.innerText="🔒 Día "+i;
 }
 
-// navegación
+container.appendChild(btn);
+}
+}
+
+renderMenu();
+
+// navegación animada
 function show(id){
-document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
-document.getElementById(id).classList.add("active");
+let current=document.querySelector(".active");
+if(current){
+current.classList.add("fadeOut");
+setTimeout(()=>{
+current.classList.remove("active","fadeOut");
+
+let next=document.getElementById(id);
+next.classList.add("active","fadeIn");
+},300);
+}else{
+document.getElementById(id).classList.add("active","fadeIn");
+}
 }
 
-function next(id){ show(id); }
+function goMenu(){
+show("menu");
+}
+
+// siguiente día
+function nextDay(){
+let current=getDay();
+let next=Math.min(current+1,7);
+
+if(DEBUG){
+DEBUG_DAY=next;
+renderMenu();
+show("day"+next);
+}else{
+show("day"+next);
+}
+}
 
 // 💓 corazón
 let c=0;
 let heart=document.getElementById("heart");
 
-heart.onclick=e=>{
+heart.onclick=()=>{
 c++;
 document.getElementById("count").innerText=c;
 
 let msg=c<70?"me encantas ❤️":c<140?"me provocas 😏":"te deseo 🔥";
 document.getElementById("msg").innerText=msg;
 
-if(c==200) document.getElementById("extra").innerText="dame uno más…";
-if(c==201) openSecret();
+if(c==200) openSecret();
 }
 
-// 🌍 mapa
-let map=L.map('map').setView([24,-107],5);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-// 🔥 slider
+// slider
 let slider=document.getElementById("slider");
 slider.oninput=()=>{
 let v=slider.value;
+
 document.getElementById("sliderTxt").innerText=
 v<50?"te estás soltando 😏":"ya no te controlas 🔥";
 
@@ -212,7 +280,9 @@ document.getElementById("openBtn").style.display="block";
 }
 }
 
-// 💻 cita
+document.getElementById("openBtn").onclick=openSecret;
+
+// cita
 function date(t){
 document.getElementById("dateMsg").innerText=
 t=="peli"?"3...2...1 🎬":
@@ -220,7 +290,7 @@ t=="cena"?"cenemos ❤️":
 "quédate conmigo 😏";
 }
 
-// 🔐 login
+// login
 function login(){
 if(document.getElementById("pass").value=="amor"){
 openSecret();
@@ -229,16 +299,13 @@ document.getElementById("loginMsg").innerText="no 😏";
 }
 }
 
-// 💥 reveal
+// reveal
 function openSecret(){
 let o=document.getElementById("overlay");
 o.style.opacity=1;
 o.style.pointerEvents="all";
 }
 
-document.getElementById("openBtn").onclick=openSecret;
-
-// cerrar
 document.getElementById("overlay").onclick=function(){
 this.style.opacity=0;
 this.style.pointerEvents="none";
