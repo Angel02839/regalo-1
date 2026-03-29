@@ -93,7 +93,6 @@ to{transform:translateY(-200px);opacity:0}
 
 <body>
 
-<!-- ========= MENÚ ========= -->
 <section id="menu" class="active">
 <h1>💖 Para Ti</h1>
 <button onclick="showDay(1)">Día 1</button>
@@ -105,7 +104,6 @@ to{transform:translateY(-200px);opacity:0}
 <button onclick="showDay(7)">Día 7</button>
 </section>
 
-<!-- ========= DÍA 1 ========= -->
 <section id="day1">
 <h2>🌍 Aunque estemos lejos</h2>
 <div id="map"></div>
@@ -122,7 +120,6 @@ to{transform:translateY(-200px);opacity:0}
 <button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- ========= DÍA 2 ========= -->
 <section id="day2">
 <h2>💌 Día 2</h2>
 <p id="day2text">Hay algo en ti que no puedo ignorar…</p>
@@ -130,7 +127,6 @@ to{transform:translateY(-200px);opacity:0}
 <button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- ========= DÍA 3 ========= -->
 <section id="day3">
 <h2>😏 Día 3</h2>
 <p id="day3text">No dejo de imaginarte…</p>
@@ -138,7 +134,6 @@ to{transform:translateY(-200px);opacity:0}
 <button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- ========= DÍA 4 ========= -->
 <section id="day4">
 <h2>🔥 ¿Cuánto me deseas?</h2>
 
@@ -153,14 +148,12 @@ to{transform:translateY(-200px);opacity:0}
 <button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- ========= DÍA 5 ========= -->
 <section id="day5">
 <h2>🧩 Ármame…</h2>
 <div id="puzzle"></div>
 <button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- ========= DÍA 6 ========= -->
 <section id="day6">
 <h2>💻 Cita conmigo</h2>
 <button onclick="date('peli')">🍿</button>
@@ -170,7 +163,6 @@ to{transform:translateY(-200px);opacity:0}
 <button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- ========= DÍA 7 ========= -->
 <section id="day7">
 <h2>🔐 Solo para ti</h2>
 <input id="pass">
@@ -200,7 +192,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 distanceText.innerText="aunque estemos lejos… ❤️";
 
 /* ========= 200 MENSAJES ========= */
-const messages = ["me haces sonreír sin darme cuenta", "pienso en ti más de lo normal", "hay algo en ti que no puedo ignorar", "me gusta cuando apareces en mi mente", "no sé en qué momento te volviste importante", "me haces sentir bien sin hacer mucho", "me encanta cómo eres", "me gusta coincidir contigo", "eres diferente a todos", "me haces falta cuando no estás", "me gusta hablar contigo más de lo que debería", "me haces pensar demasiado", "hay algo en ti que me atrapa", "me gustas más de lo que planeé", "me haces sonreír solo con recordarte", "me gusta cómo me haces sentir", "no dejo de acordarme de ti", "me haces querer saber más de ti", "me importas más de lo que digo", "contigo todo cambia", "ya no es solo normal lo que siento", "empiezas a gustarme demasiado", "me estás metiendo en problemas 😏", "me gustas más cada día", "me haces perder la concentración", "no dejo de pensarte", "me traes distraído", "me gusta imaginarte", "esto ya no es casualidad", "me tienes pensando de más", "me haces querer estar contigo", "ya eres parte de mi día", "me gustas demasiado", "esto ya se siente diferente", "me estás atrapando poco a poco", "no puedo ignorarlo", "me haces falta sin razón", "me encantas más de lo que digo", "me tienes completamente metido en esto", "me gusta pensarte a cada rato", "ya no es solo bonito", "esto ya es algo más", "me haces querer más de ti", "no dejo de imaginarte conmigo", "me tienes sonriendo solo", "esto se está saliendo de control", "me gustas de verdad", "no puedo dejar de pensarte", "me haces sentir cosas raras", "esto ya no es normal", "me encanta imaginarte conmigo", "me haces pensar en cómo sería tenerte cerca", "no dejo de imaginar momentos contigo", "me tienes completamente atrapado", "me haces querer más", "esto ya se volvió intenso", "no puedo ignorar lo que siento", "me gustas demasiado en serio", "esto ya no es juego", "me haces sentir diferente", "no dejo de imaginarte cerca", "me haces querer abrazarte", "me haces pensar en ti todo el tiempo", "esto ya es otra cosa", "me tienes completamente metido", "me haces perder el control poquito", "no puedo dejar de pensarte ni un segundo", "me encantas demasiado", "esto ya es intenso", "me haces querer más de lo normal", "me provocas 😏", "no sabes lo que causas en mí", "me haces pensar en cosas contigo", "esto ya no es inocente", "me gustas demasiado", "no dejo de imaginarte", "me tienes completamente atrapado", "esto ya se siente fuerte", "me haces querer tenerte cerca", "me estás volviendo loco", "me haces imaginarte conmigo 🔥", "no dejo de pensarte ni un momento", "me tienes mal", "esto ya es deseo", "me provocas demasiado", "me haces querer más de ti", "no puedo controlarlo", "me encantas demasiado", "me haces perder el control", "esto ya no es solo bonito", "me haces desear tenerte cerca", "no dejo de imaginarte conmigo", "me tienes completamente atrapado", "esto ya es demasiado", "me haces pensar en ti todo el tiempo", "me vuelves loco 🔥", "no puedo dejar de imaginarte", "me haces querer más y más", "esto ya es fuerte", "me provocas demasiado", "no puedo controlarme contigo", "me haces pensar en tenerte cerca", "esto ya es intenso", "me haces perder el control", "no dejo de imaginarte", "me tienes completamente atrapado", "esto ya no es juego", "me haces querer más", "me provocas demasiado", "esto ya es otra cosa", "si estuvieras aquí… sería diferente", "no sabes lo que me haces imaginar", "me haces querer tenerte cerca de verdad", "esto ya es demasiado fuerte", "no podría controlarme contigo", "me tienes completamente atrapado", "esto ya es deseo real", "no dejo de pensar en tenerte", "me haces perder el control de verdad", "esto ya no es leve", "me haces imaginarte conmigo de verdad", "no podría ignorarte aunque quisiera", "me tienes completamente metido en esto", "esto ya no es solo pensar", "me haces querer más de ti", "no dejo de imaginarte cerca", "esto ya es fuerte", "me provocas demasiado", "no puedo controlarlo contigo", "esto ya es real", "si estuvieras aquí… no sería tranquilo", "no dejaría que te fueras tan fácil", "me haces pensar en tenerte cerca", "no habría distancia entre nosotros", "esto ya es demasiado", "me haces querer sentirte cerca", "no podría controlarme", "esto ya es deseo puro", "me tienes completamente atrapado", "no dejo de imaginarte conmigo", "no habría forma de ignorarte", "me haces querer acercarme más", "esto ya es otra cosa", "me provocas demasiado", "no podría controlarme contigo", "esto ya es fuerte", "me haces querer más", "no dejo de imaginarte cerca", "esto ya no es leve", "me tienes completamente atrapado", "si te tuviera aquí… no me alejaría ni un segundo", "me haces querer sentirte más cerca de lo normal", "no habría espacio entre tú y yo", "me tienes con ganas de acercarme más y más", "no podría quedarme tranquilo si estuvieras aquí", "me haces querer perder el control contigo", "esto ya es demasiado fuerte para ignorarlo", "no dejaría de buscarte ni un segundo", "me tienes completamente dominado", "ya no es solo querer… ;
+const messages = ["me haces sonreír sin darme cuenta", "pienso en ti más de lo normal", "hay algo en ti que no puedo ignorar", "me gusta cuando apareces en mi mente", "no sé en qué momento te volviste importante", "me haces sentir bien sin hacer mucho", "me encanta cómo eres", "me gusta coincidir contigo", "eres diferente a todos", "me haces falta cuando no estás", "me gusta hablar contigo más de lo que debería", "me haces pensar demasiado", "hay algo en ti que me atrapa", "me gustas más de lo que planeé", "me haces sonreír solo con recordarte", "me gusta cómo me haces sentir", "no dejo de acordarme de ti", "me haces querer saber más de ti", "me importas más de lo que digo", "contigo todo cambia", "ya no es solo normal lo que siento", "empiezas a gustarme demasiado", "me estás metiendo en problemas 😏", "me gustas más cada día", "me haces perder la concentración", "no dejo de pensarte", "me traes distraído", "me gusta imaginarte", "esto ya no es casualidad", "me tienes pensando de más", "me haces querer estar contigo", "ya eres parte de mi día", "me gustas demasiado", "esto ya se siente diferente", "me estás atrapando poco a poco", "no puedo ignorarlo", "me haces falta sin razón", "me encantas más de lo que digo", "me tienes completamente metido en esto", "me gusta pensarte a cada rato", "ya no es solo bonito", "esto ya es algo más", "me haces querer más de ti", "no dejo de imaginarte conmigo", "me tienes sonriendo solo", "esto se está saliendo de control", "me gustas de verdad", "no puedo dejar de pensarte", "me haces sentir cosas raras", "esto ya no es normal", "me encanta imaginarte conmigo", "me haces pensar en cómo sería tenerte cerca", "no dejo de imaginar momentos contigo", "me tienes completamente atrapado", "me haces querer más", "esto ya se volvió intenso", "no puedo ignorar lo que siento", "me gustas demasiado en serio", "esto ya no es juego", "me haces sentir diferente", "no dejo de imaginarte cerca", "me haces querer abrazarte", "me haces pensar en ti todo el tiempo", "esto ya es otra cosa", "me tienes completamente metido", "me haces perder el control poquito", "no puedo dejar de pensarte ni un segundo", "me encantas demasiado", "esto ya es intenso", "me haces querer más de lo normal", "me provocas 😏", "no sabes lo que causas en mí", "me haces pensar en cosas contigo", "esto ya no es inocente", "me gustas demasiado", "no dejo de imaginarte", "me tienes completamente atrapado", "esto ya se siente fuerte", "me haces querer tenerte cerca", "me estás volviendo loco", "me haces imaginarte conmigo 🔥", "no dejo de pensarte ni un momento", "me tienes mal", "esto ya es deseo", "me provocas demasiado", "me haces querer más de ti", "no puedo controlarlo", "me encantas demasiado", "me haces perder el control", "esto ya no es solo bonito", "me haces desear tenerte cerca", "no dejo de imaginarte conmigo", "me tienes completamente atrapado", "esto ya es demasiado", "me haces pensar en ti todo el tiempo", "me vuelves loco 🔥", "no puedo dejar de imaginarte", "me haces querer más y más", "esto ya es fuerte", "me provocas demasiado", "no puedo controlarme contigo", "me haces pensar en tenerte cerca", "esto ya es intenso", "me haces perder el control", "no dejo de imaginarte", "me tienes completamente atrapado", "esto ya no es juego", "me haces querer más", "me provocas demasiado", "esto ya es otra cosa", "si estuvieras aquí… sería diferente", "no sabes lo que me haces imaginar", "me haces querer tenerte cerca de verdad", "esto ya es demasiado fuerte", "no podría controlarme contigo", "me tienes completamente atrapado", "esto ya es deseo real", "no dejo de pensar en tenerte", "me haces perder el control de verdad", "esto ya no es leve", "me haces imaginarte conmigo de verdad", "no podría ignorarte aunque quisiera", "me tienes completamente metido en esto", "esto ya no es solo pensar", "me haces querer más de ti", "no dejo de imaginarte cerca", "esto ya es fuerte", "me provocas demasiado", "no puedo controlarlo contigo", "esto ya es real", "si estuvieras aquí… no sería tranquilo", "no dejaría que te fueras tan fácil", "me haces pensar en tenerte cerca", "no habría distancia entre nosotros", "esto ya es demasiado", "me haces querer sentirte cerca", "no podría controlarme", "esto ya es deseo puro", "me tienes completamente atrapado", "no dejo de imaginarte conmigo", "no habría forma de ignorarte", "me haces querer acercarme más", "esto ya es otra cosa", "me provocas demasiado", "no podría controlarme contigo", "esto ya es fuerte", "me haces querer más", "no dejo de imaginarte cerca", "esto ya no es leve", "me tienes completamente atrapado", "si te tuviera aquí… no me alejaría ni un segundo", "me haces querer sentirte más cerca de lo normal", "no habría espacio entre tú y yo", "me tienes con ganas de acercarme más y más", "no podría quedarme tranquilo si estuvieras aquí", "me haces querer perder el control contigo", "esto ya es demasiado fuerte para ignorarlo", "no dejaría de buscarte ni un segundo", "me tienes completamente dominado", "ya no es solo querer…"]; // <-- AQUÍ ESTABA EL ERROR: Faltaban las comillas y cerrar el corchete.
+
 for(let i=1;i<=200;i++){
 messages.push(`pensamiento único #${i} contigo ❤️`);
 }
@@ -244,6 +237,22 @@ if(pass.value=="Noah Losano Villegas"){
 gallery.style.display="block";
 loginMsg.innerText="correcto ❤️";
 }else loginMsg.innerText="piensa bien…";
+}
+
+/* ========= FUNCIONES FALTANTES AGREGADAS ========= */
+// Agregué esto para que los botones de los días 2, 3 y 6 no den error.
+function day2More() {
+    document.getElementById("day2text").innerText += " y me encanta.";
+}
+function day3More() {
+    document.getElementById("day3text").innerText += " todo el día.";
+}
+function date(tipo) {
+    let mensaje = "";
+    if(tipo === 'peli') mensaje = "Preparando las palomitas... 🍿";
+    if(tipo === 'cena') mensaje = "Haciendo la reservación... 🍔";
+    if(tipo === 'chat') mensaje = "Listo para no dormir... 💬";
+    document.getElementById("dateMsg").innerText = mensaje;
 }
 
 </script>
