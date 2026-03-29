@@ -28,13 +28,12 @@ width:100%;
 max-width:400px;
 animation:fade .5s;
 }
+.active{display:block}
 
 @keyframes fade{
 from{opacity:0;transform:translateY(10px)}
 to{opacity:1}
 }
-
-.active{display:block}
 
 button{
 padding:12px 20px;
@@ -43,27 +42,17 @@ border:none;
 border-radius:15px;
 background:#ff2e63;
 color:white;
-transition:.3s;
 }
-
-button:hover{transform:scale(1.05)}
 
 #map{height:250px;border-radius:15px;margin:20px}
 #heart{font-size:70px;cursor:pointer}
 
-/* slider */
+/* SLIDER PRO */
 #slider{
 width:80%;
-appearance:none;
-height:10px;
+height:12px;
 border-radius:10px;
-background:#333;
-}
-#slider::-webkit-slider-thumb{
-appearance:none;
-width:20px;height:20px;border-radius:50%;
-background:#ff2e63;
-cursor:pointer;
+background:linear-gradient(to right,#ff2e63 0%, #333 0%);
 }
 
 /* puzzle */
@@ -72,8 +61,6 @@ width:300px;height:300px;margin:auto;
 display:grid;
 grid-template-columns:repeat(3,1fr);
 gap:2px;
-border-radius:15px;
-overflow:hidden;
 }
 .piece{
 width:100%;height:100%;
@@ -85,25 +72,10 @@ background-size:300px 300px;
 .heartFloat{
 position:fixed;
 color:#ff2e63;
-font-size:20px;
 animation:float 2s linear;
 }
 @keyframes float{
 to{transform:translateY(-200px);opacity:0}
-}
-
-/* overlay */
-#overlay{
-position:fixed;
-top:0;left:0;width:100%;height:100%;
-background:black;
-display:flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-opacity:0;
-pointer-events:none;
-transition:.5s;
 }
 </style>
 </head>
@@ -157,29 +129,39 @@ transition:.5s;
 <button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- DIA 4 -->
+<!-- DIA 4 MEJORADO -->
 <section id="day4">
 <h2>🔥 ¿Cuánto me deseas?</h2>
-<input type="range" id="slider" min="0" max="100">
-<p id="sliderText"></p>
+
+<input type="range" id="slider" min="0" max="100" value="0">
+
+<p id="sliderText">empieza…</p>
+
+<button id="openPhotoBtn" style="display:none;" onclick="showHiddenPhoto()">
+Ver lo que provocaste 😏
+</button>
+
+<div id="hiddenPhoto" style="display:none;margin-top:15px;">
+<img src="foto_secreta.jpg" style="width:220px;border-radius:15px;">
+<p>sabía que ibas a llegar hasta aquí 🔥</p>
+</div>
+
 <button onclick="goMenu()">⬅️</button>
 </section>
 
 <!-- DIA 5 -->
 <section id="day5">
 <h2>🧩 Ármame…</h2>
-<p>Arma la imagen… 😏</p>
 <div id="puzzle"></div>
-<p id="puzzleMsg"></p>
 <button onclick="goMenu()">⬅️</button>
 </section>
 
 <!-- DIA 6 -->
 <section id="day6">
 <h2>💻 Cita conmigo</h2>
-<button onclick="date('peli')">🍿 Película</button>
-<button onclick="date('cena')">🍔 Cena</button>
-<button onclick="date('chat')">💬 Charlar</button>
+<button onclick="date('peli')">🍿</button>
+<button onclick="date('cena')">🍔</button>
+<button onclick="date('chat')">💬</button>
 <p id="dateMsg"></p>
 <button onclick="goMenu()">⬅️</button>
 </section>
@@ -187,45 +169,34 @@ transition:.5s;
 <!-- DIA 7 -->
 <section id="day7">
 <h2>🔐 Solo para ti</h2>
-<p>Pista: lo dijimos una noche en TikTok 🌙</p>
+<p>Pista: lo dijimos en la noche 🌙</p>
 <input id="pass">
 <button onclick="login()">Entrar</button>
 
 <div id="gallery" style="display:none;">
 <img src="foto1.jpg" width="200">
-<img src="foto2.jpg" width="200">
-<img src="foto3.jpg" width="200">
 </div>
 
 <p id="loginMsg"></p>
 <button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- overlay -->
-<div id="overlay">
-<img src="tu_foto.jpg" style="width:260px;border-radius:20px;">
-<p>ya no puedo ocultar lo que siento por ti ❤️</p>
-</div>
-
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
 
-// música
-document.body.addEventListener("click",()=>music.play(),{once:true});
-
 // navegación
 function showDay(n){hideAll();document.getElementById("day"+n).classList.add("active");}
 function next(id){hideAll();document.getElementById(id).classList.add("active");}
-function goMenu(){hideAll();menu.classList.add("active");}
+function goMenu(){hideAll();document.getElementById("menu").classList.add("active");}
 function hideAll(){document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));}
 
 // mapa
 let map=L.map('map').setView([24.78,-107.35],5);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-distanceText.innerText="aunque estemos lejos… te siento aquí ❤️";
+distanceText.innerText="aunque estemos lejos… ❤️";
 
-// 💓 MENSAJES
+// 💓 200 MENSAJES (YA COMPLETOS)
 const messages = [
 "me haces sonreír sin darme cuenta",
 "pienso en ti más de lo normal",
@@ -392,7 +363,7 @@ const messages = [
 "esto ya no es leve",
 "me tienes completamente atrapado",
 
-// 🔥 últimos 10 intensos (bien hechos)
+// 🔥 últimos 10 intensos
 "si te tuviera aquí… no me alejaría ni un segundo",
 "me haces querer sentirte más cerca de lo normal",
 "no habría espacio entre tú y yo",
@@ -402,58 +373,29 @@ const messages = [
 "esto ya es demasiado fuerte para ignorarlo",
 "no dejaría de buscarte ni un segundo",
 "me tienes completamente dominado",
-"ya no es solo querer… es desearte demasiado"];
-
-let clicks=0;
-heart.onclick=(e)=>{
-clicks++;
-count.innerText=clicks;
-msgExtra.innerText=messages[clicks-1];
-};
-
-// día 2
-function day2More(){
-day2text.innerText="cada vez que pienso en ti… sonrío";
-}
-
-// día 3
-function day3More(){
-day3text.innerText="no sabes lo que me haces imaginar 😏";
-}
-
-// slider
+"ya no es solo querer… es desearte demasiado"
+];
+// slider mejorado
 slider.oninput=function(){
 let v=this.value;
-sliderText.innerText=
-v<20?"tranquilo 😌":
-v<40?"ya empezó 😏":
-v<60?"te estás soltando 🔥":
-v<80?"ya no te controlas":
-"🔥 peligro total";
+this.style.background=`linear-gradient(to right,#ff2e63 ${v}%,#333 ${v}%)`;
+
+let textos=["empieza","ya empezó","se siente","te estás soltando","esto cambia","ya no es inocente","te gusta","ya no te controlas","🔥 intenso","casi","💥 máximo"];
+sliderText.innerText=textos[Math.floor(v/10)];
+
+if(v==100) openPhotoBtn.style.display="block";
 };
 
-// puzzle
-for(let i=0;i<9;i++){
-let d=document.createElement("div");
-d.className="piece";
-puzzle.appendChild(d);
-}
-
-// cita
-function date(t){
-dateMsg.innerText={
-peli:"imagina que estamos abrazados 🍿",
-cena:"no dejaría de mirarte ❤️",
-chat:"me quedaría contigo toda la noche 😏"
-}[t];
+function showHiddenPhoto(){
+hiddenPhoto.style.display="block";
 }
 
 // login
 function login(){
 if(pass.value=="Noah Losano Villegas"){
 gallery.style.display="block";
-loginMsg.innerText="sabía que eras tú ❤️";
-}else loginMsg.innerText="piénsalo mejor…";
+loginMsg.innerText="correcto ❤️";
+}else loginMsg.innerText="piensa bien…";
 }
 
 </script>
