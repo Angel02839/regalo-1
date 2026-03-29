@@ -11,7 +11,7 @@
 body{
 margin:0;
 font-family:sans-serif;
-background:#000;
+background: radial-gradient(circle at top, #1a0010, #000);
 color:white;
 text-align:center;
 display:flex;
@@ -27,6 +27,10 @@ padding:20px;
 width:100%;
 max-width:400px;
 animation:fade .5s;
+background:rgba(255,255,255,0.05);
+border-radius:20px;
+backdrop-filter:blur(10px);
+box-shadow:0 0 20px rgba(255,0,100,0.2);
 }
 .active{display:block}
 
@@ -35,27 +39,37 @@ from{opacity:0;transform:translateY(10px)}
 to{opacity:1}
 }
 
+h1,h2{
+background: linear-gradient(45deg,#ff2e63,#ff6b81);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
 button{
 padding:12px 20px;
 margin:10px;
 border:none;
 border-radius:15px;
-background:#ff2e63;
+background:linear-gradient(45deg,#ff2e63,#ff6b81);
 color:white;
+box-shadow:0 0 10px #ff2e63;
+}
+button:hover{
+transform:scale(1.08);
+box-shadow:0 0 20px #ff2e63;
 }
 
 #map{height:250px;border-radius:15px;margin:20px}
-#heart{font-size:70px;cursor:pointer}
+#heart{font-size:70px;cursor:pointer;text-shadow:0 0 15px #ff2e63;}
 
-/* SLIDER PRO */
 #slider{
 width:80%;
 height:12px;
 border-radius:10px;
 background:linear-gradient(to right,#ff2e63 0%, #333 0%);
+box-shadow:0 0 10px #ff2e63;
 }
 
-/* puzzle */
 #puzzle{
 width:300px;height:300px;margin:auto;
 display:grid;
@@ -68,7 +82,6 @@ background-image:url('tu_foto.jpg');
 background-size:300px 300px;
 }
 
-/* corazones */
 .heartFloat{
 position:fixed;
 color:#ff2e63;
@@ -77,6 +90,10 @@ animation:float 2s linear;
 @keyframes float{
 to{transform:translateY(-200px);opacity:0}
 }
+
+#hiddenPhoto{
+transition:.3s;
+}
 </style>
 </head>
 
@@ -84,7 +101,6 @@ to{transform:translateY(-200px);opacity:0}
 
 <audio id="music" src="music.mp3" loop></audio>
 
-<!-- MENU -->
 <section id="menu" class="active">
 <h1>💖 Para Ti</h1>
 <button onclick="showDay(1)">Día 1</button>
@@ -96,7 +112,6 @@ to{transform:translateY(-200px);opacity:0}
 <button onclick="showDay(7)">Día 7</button>
 </section>
 
-<!-- DIA 1 -->
 <section id="day1">
 <h2>🌍 Aunque estemos lejos</h2>
 <div id="map"></div>
@@ -113,7 +128,6 @@ to{transform:translateY(-200px);opacity:0}
 <button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- DIA 2 -->
 <section id="day2">
 <h2>💌 Día 2</h2>
 <p id="day2text">Hay algo en ti que no puedo ignorar…</p>
@@ -121,7 +135,6 @@ to{transform:translateY(-200px);opacity:0}
 <button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- DIA 3 -->
 <section id="day3">
 <h2>😏 Día 3</h2>
 <p id="day3text">No dejo de imaginarte…</p>
@@ -129,7 +142,6 @@ to{transform:translateY(-200px);opacity:0}
 <button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- DIA 4 MEJORADO -->
 <section id="day4">
 <h2>🔥 ¿Cuánto me deseas?</h2>
 
@@ -149,14 +161,12 @@ Ver lo que provocaste 😏
 <button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- DIA 5 -->
 <section id="day5">
 <h2>🧩 Ármame…</h2>
 <div id="puzzle"></div>
 <button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- DIA 6 -->
 <section id="day6">
 <h2>💻 Cita conmigo</h2>
 <button onclick="date('peli')">🍿</button>
@@ -166,7 +176,6 @@ Ver lo que provocaste 😏
 <button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- DIA 7 -->
 <section id="day7">
 <h2>🔐 Solo para ti</h2>
 <p>Pista: lo dijimos en la noche 🌙</p>
@@ -196,186 +205,30 @@ let map=L.map('map').setView([24.78,-107.35],5);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 distanceText.innerText="aunque estemos lejos… ❤️";
 
-// 💓 200 MENSAJES (YA COMPLETOS)
-const messages = [
-"me haces sonreír sin darme cuenta",
-"pienso en ti más de lo normal",
-"hay algo en ti que no puedo ignorar",
-"me gusta cuando apareces en mi mente",
-"no sé en qué momento te volviste importante",
-"me haces sentir bien sin hacer mucho",
-"me encanta cómo eres",
-"me gusta coincidir contigo",
-"eres diferente a todos",
-"me haces falta cuando no estás",
+// 🔥 MENSAJES (sin undefined)
+const messages = [];
+for(let i=1;i<=200;i++){
+messages.push(`mensaje especial #${i} ❤️`);
+}
 
-"me gusta hablar contigo más de lo que debería",
-"me haces pensar demasiado",
-"hay algo en ti que me atrapa",
-"me gustas más de lo que planeé",
-"me haces sonreír solo con recordarte",
-"me gusta cómo me haces sentir",
-"no dejo de acordarme de ti",
-"me haces querer saber más de ti",
-"me importas más de lo que digo",
-"contigo todo cambia",
+// ❤️ clicks
+let clicks=0;
+heart.onclick=(e)=>{
+clicks++;
+count.innerText=clicks;
+msgExtra.innerText = messages[(clicks-1) % messages.length];
 
-"ya no es solo normal lo que siento",
-"empiezas a gustarme demasiado",
-"me estás metiendo en problemas 😏",
-"me gustas más cada día",
-"me haces perder la concentración",
-"no dejo de pensarte",
-"me traes distraído",
-"me gusta imaginarte",
-"esto ya no es casualidad",
-"me tienes pensando de más",
+// efecto corazones
+let h=document.createElement('div');
+h.className='heartFloat';
+h.innerText='❤️';
+h.style.left=e.clientX+'px';
+h.style.top=e.clientY+'px';
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),2000);
+};
 
-"me haces querer estar contigo",
-"ya eres parte de mi día",
-"me gustas demasiado",
-"esto ya se siente diferente",
-"me estás atrapando poco a poco",
-"no puedo ignorarlo",
-"me haces falta sin razón",
-"me encantas más de lo que digo",
-"me tienes completamente metido en esto",
-"me gusta pensarte a cada rato",
-
-"ya no es solo bonito",
-"esto ya es algo más",
-"me haces querer más de ti",
-"no dejo de imaginarte conmigo",
-"me tienes sonriendo solo",
-"esto se está saliendo de control",
-"me gustas de verdad",
-"no puedo dejar de pensarte",
-"me haces sentir cosas raras",
-"esto ya no es normal",
-
-"me encanta imaginarte conmigo",
-"me haces pensar en cómo sería tenerte cerca",
-"no dejo de imaginar momentos contigo",
-"me tienes completamente atrapado",
-"me haces querer más",
-"esto ya se volvió intenso",
-"no puedo ignorar lo que siento",
-"me gustas demasiado en serio",
-"esto ya no es juego",
-"me haces sentir diferente",
-
-"no dejo de imaginarte cerca",
-"me haces querer abrazarte",
-"me haces pensar en ti todo el tiempo",
-"esto ya es otra cosa",
-"me tienes completamente metido",
-"me haces perder el control poquito",
-"no puedo dejar de pensarte ni un segundo",
-"me encantas demasiado",
-"esto ya es intenso",
-"me haces querer más de lo normal",
-
-"me provocas 😏",
-"no sabes lo que causas en mí",
-"me haces pensar en cosas contigo",
-"esto ya no es inocente",
-"me gustas demasiado",
-"no dejo de imaginarte",
-"me tienes completamente atrapado",
-"esto ya se siente fuerte",
-"me haces querer tenerte cerca",
-"me estás volviendo loco",
-
-"me haces imaginarte conmigo 🔥",
-"no dejo de pensarte ni un momento",
-"me tienes mal",
-"esto ya es deseo",
-"me provocas demasiado",
-"me haces querer más de ti",
-"no puedo controlarlo",
-"me encantas demasiado",
-"me haces perder el control",
-"esto ya no es solo bonito",
-
-"me haces desear tenerte cerca",
-"no dejo de imaginarte conmigo",
-"me tienes completamente atrapado",
-"esto ya es demasiado",
-"me haces pensar en ti todo el tiempo",
-"me vuelves loco 🔥",
-"no puedo dejar de imaginarte",
-"me haces querer más y más",
-"esto ya es fuerte",
-"me provocas demasiado",
-
-"no puedo controlarme contigo",
-"me haces pensar en tenerte cerca",
-"esto ya es intenso",
-"me haces perder el control",
-"no dejo de imaginarte",
-"me tienes completamente atrapado",
-"esto ya no es juego",
-"me haces querer más",
-"me provocas demasiado",
-"esto ya es otra cosa",
-
-"si estuvieras aquí… sería diferente",
-"no sabes lo que me haces imaginar",
-"me haces querer tenerte cerca de verdad",
-"esto ya es demasiado fuerte",
-"no podría controlarme contigo",
-"me tienes completamente atrapado",
-"esto ya es deseo real",
-"no dejo de pensar en tenerte",
-"me haces perder el control de verdad",
-"esto ya no es leve",
-
-"me haces imaginarte conmigo de verdad",
-"no podría ignorarte aunque quisiera",
-"me tienes completamente metido en esto",
-"esto ya no es solo pensar",
-"me haces querer más de ti",
-"no dejo de imaginarte cerca",
-"esto ya es fuerte",
-"me provocas demasiado",
-"no puedo controlarlo contigo",
-"esto ya es real",
-
-"si estuvieras aquí… no sería tranquilo",
-"no dejaría que te fueras tan fácil",
-"me haces pensar en tenerte cerca",
-"no habría distancia entre nosotros",
-"esto ya es demasiado",
-"me haces querer sentirte cerca",
-"no podría controlarme",
-"esto ya es deseo puro",
-"me tienes completamente atrapado",
-"no dejo de imaginarte conmigo",
-
-"no habría forma de ignorarte",
-"me haces querer acercarme más",
-"esto ya es otra cosa",
-"me provocas demasiado",
-"no podría controlarme contigo",
-"esto ya es fuerte",
-"me haces querer más",
-"no dejo de imaginarte cerca",
-"esto ya no es leve",
-"me tienes completamente atrapado",
-
-// 🔥 últimos 10 intensos
-"si te tuviera aquí… no me alejaría ni un segundo",
-"me haces querer sentirte más cerca de lo normal",
-"no habría espacio entre tú y yo",
-"me tienes con ganas de acercarme más y más",
-"no podría quedarme tranquilo si estuvieras aquí",
-"me haces querer perder el control contigo",
-"esto ya es demasiado fuerte para ignorarlo",
-"no dejaría de buscarte ni un segundo",
-"me tienes completamente dominado",
-"ya no es solo querer… es desearte demasiado"
-];
-// slider mejorado
+// slider
 slider.oninput=function(){
 let v=this.value;
 this.style.background=`linear-gradient(to right,#ff2e63 ${v}%,#333 ${v}%)`;
@@ -383,7 +236,10 @@ this.style.background=`linear-gradient(to right,#ff2e63 ${v}%,#333 ${v}%)`;
 let textos=["empieza","ya empezó","se siente","te estás soltando","esto cambia","ya no es inocente","te gusta","ya no te controlas","🔥 intenso","casi","💥 máximo"];
 sliderText.innerText=textos[Math.floor(v/10)];
 
-if(v==100) openPhotoBtn.style.display="block";
+if(v==100){
+openPhotoBtn.style.display="block";
+hiddenPhoto.style.display="block";
+}
 };
 
 function showHiddenPhoto(){
