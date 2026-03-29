@@ -26,6 +26,12 @@ display:none;
 padding:20px;
 width:100%;
 max-width:400px;
+animation:fade .5s;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(10px)}
+to{opacity:1}
 }
 
 .active{display:block}
@@ -37,51 +43,40 @@ border:none;
 border-radius:15px;
 background:#ff2e63;
 color:white;
+transition:.3s;
 }
 
-#menu button{
-background:#111;
-border:1px solid #ff2e63
-}
+button:hover{transform:scale(1.05)}
 
-#map{
-height:250px;
-border-radius:15px;
-margin:20px
-}
-
+#map{height:250px;border-radius:15px;margin:20px}
 #heart{font-size:70px;cursor:pointer}
-#slider{width:80%}
 
-/* overlay */
-#overlay{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:black;
-display:flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-opacity:0;
-pointer-events:none;
-transition:.5s;
+/* slider */
+#slider{
+width:80%;
+appearance:none;
+height:10px;
+border-radius:10px;
+background:#333;
+}
+#slider::-webkit-slider-thumb{
+appearance:none;
+width:20px;height:20px;border-radius:50%;
+background:#ff2e63;
+cursor:pointer;
 }
 
 /* puzzle */
 #puzzle{
-width:300px;
-height:300px;
-margin:auto;
+width:300px;height:300px;margin:auto;
 display:grid;
 grid-template-columns:repeat(3,1fr);
 gap:2px;
+border-radius:15px;
+overflow:hidden;
 }
 .piece{
-width:100%;
-height:100%;
+width:100%;height:100%;
 background-image:url('tu_foto.jpg');
 background-size:300px 300px;
 }
@@ -95,6 +90,20 @@ animation:float 2s linear;
 }
 @keyframes float{
 to{transform:translateY(-200px);opacity:0}
+}
+
+/* overlay */
+#overlay{
+position:fixed;
+top:0;left:0;width:100%;height:100%;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+opacity:0;
+pointer-events:none;
+transition:.5s;
 }
 </style>
 </head>
@@ -135,16 +144,16 @@ to{transform:translateY(-200px);opacity:0}
 <!-- DIA 2 -->
 <section id="day2">
 <h2>💌 Día 2</h2>
-<p>Te pienso todo el tiempo ❤️</p>
-<button onclick="openSecret()">Ver más</button>
+<p id="day2text">Hay algo en ti que no puedo ignorar…</p>
+<button onclick="day2More()">Seguir</button>
 <button onclick="goMenu()">⬅️</button>
 </section>
 
 <!-- DIA 3 -->
 <section id="day3">
 <h2>😏 Día 3</h2>
-<p>No dejo de imaginarte...</p>
-<button onclick="openSecret()">Quiero verte</button>
+<p id="day3text">No dejo de imaginarte…</p>
+<button onclick="day3More()">Más</button>
 <button onclick="goMenu()">⬅️</button>
 </section>
 
@@ -153,13 +162,13 @@ to{transform:translateY(-200px);opacity:0}
 <h2>🔥 ¿Cuánto me deseas?</h2>
 <input type="range" id="slider" min="0" max="100">
 <p id="sliderText"></p>
-<button id="openBtn" style="display:none;">Abrir</button>
 <button onclick="goMenu()">⬅️</button>
 </section>
 
 <!-- DIA 5 -->
 <section id="day5">
 <h2>🧩 Ármame…</h2>
+<p>Arma la imagen… 😏</p>
 <div id="puzzle"></div>
 <p id="puzzleMsg"></p>
 <button onclick="goMenu()">⬅️</button>
@@ -168,9 +177,9 @@ to{transform:translateY(-200px);opacity:0}
 <!-- DIA 6 -->
 <section id="day6">
 <h2>💻 Cita conmigo</h2>
-<button onclick="date('peli')">🍿</button>
-<button onclick="date('cena')">🍔</button>
-<button onclick="date('chat')">💬</button>
+<button onclick="date('peli')">🍿 Película</button>
+<button onclick="date('cena')">🍔 Cena</button>
+<button onclick="date('chat')">💬 Charlar</button>
 <p id="dateMsg"></p>
 <button onclick="goMenu()">⬅️</button>
 </section>
@@ -178,7 +187,8 @@ to{transform:translateY(-200px);opacity:0}
 <!-- DIA 7 -->
 <section id="day7">
 <h2>🔐 Solo para ti</h2>
-<input id="pass" placeholder="contraseña">
+<p>Pista: lo dijimos una noche en TikTok 🌙</p>
+<input id="pass">
 <button onclick="login()">Entrar</button>
 
 <div id="gallery" style="display:none;">
@@ -194,7 +204,7 @@ to{transform:translateY(-200px);opacity:0}
 <!-- overlay -->
 <div id="overlay">
 <img src="tu_foto.jpg" style="width:260px;border-radius:20px;">
-<p>si llegaste hasta aquí… es porque eres muy especial para mí ❤️</p>
+<p>ya no puedo ocultar lo que siento por ti ❤️</p>
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -202,121 +212,248 @@ to{transform:translateY(-200px);opacity:0}
 <script>
 
 // música
-document.body.addEventListener("click",()=>{
-document.getElementById("music").play();
-},{once:true});
+document.body.addEventListener("click",()=>music.play(),{once:true});
 
 // navegación
 function showDay(n){hideAll();document.getElementById("day"+n).classList.add("active");}
 function next(id){hideAll();document.getElementById(id).classList.add("active");}
-function goMenu(){hideAll();document.getElementById("menu").classList.add("active");}
+function goMenu(){hideAll();menu.classList.add("active");}
 function hideAll(){document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));}
 
-// MAPA
-let city1=[24.78,-107.35];
-let city2=[19.86,-100.82];
-let map=L.map('map').setView(city1,5);
+// mapa
+let map=L.map('map').setView([24.78,-107.35],5);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-L.marker(city1).addTo(map);
-L.marker(city2).addTo(map);
-L.polyline([city1,city2],{color:'red'}).addTo(map);
-let dist=Math.sqrt((city1[0]-city2[0])**2+(city1[1]-city2[1])**2)*111;
-distanceText.innerText=`Estamos a ${Math.floor(dist)} km… pero te siento aquí ❤️`;
+distanceText.innerText="aunque estemos lejos… te siento aquí ❤️";
 
-// MENSAJES
-const messages = Array.from({length:200}, (_,i)=>{
-if(i<50) return "me haces sonreír cada vez más ❤️";
-if(i<100) return "me estás gustando demasiado 😏";
-if(i<150) return "no dejo de imaginarte 🔥";
-return "te deseo cada vez más 🔥";
-});
+// 💓 MENSAJES
+const messages = [const messages = [ 
+"me haces sonreír sin darme cuenta",
+"pienso en ti más de lo normal",
+"hay algo en ti que no puedo ignorar",
+"me gusta cuando apareces en mi mente",
+"no sé en qué momento te volviste importante",
+"me haces sentir bien sin hacer mucho",
+"me encanta cómo eres",
+"me gusta coincidir contigo",
+"eres diferente a todos",
+"me haces falta cuando no estás",
 
-// corazón
+"me gusta hablar contigo más de lo que debería",
+"me haces pensar demasiado",
+"hay algo en ti que me atrapa",
+"me gustas más de lo que planeé",
+"me haces sonreír solo con recordarte",
+"me gusta cómo me haces sentir",
+"no dejo de acordarme de ti",
+"me haces querer saber más de ti",
+"me importas más de lo que digo",
+"contigo todo cambia",
+
+"ya no es solo normal lo que siento",
+"empiezas a gustarme demasiado",
+"me estás metiendo en problemas 😏",
+"me gustas más cada día",
+"me haces perder la concentración",
+"no dejo de pensarte",
+"me traes distraído",
+"me gusta imaginarte",
+"esto ya no es casualidad",
+"me tienes pensando de más",
+
+"me haces querer estar contigo",
+"ya eres parte de mi día",
+"me gustas demasiado",
+"esto ya se siente diferente",
+"me estás atrapando poco a poco",
+"no puedo ignorarlo",
+"me haces falta sin razón",
+"me encantas más de lo que digo",
+"me tienes completamente metido en esto",
+"me gusta pensarte a cada rato",
+
+"ya no es solo bonito",
+"esto ya es algo más",
+"me haces querer más de ti",
+"no dejo de imaginarte conmigo",
+"me tienes sonriendo solo",
+"esto se está saliendo de control",
+"me gustas de verdad",
+"no puedo dejar de pensarte",
+"me haces sentir cosas raras",
+"esto ya no es normal",
+
+"me encanta imaginarte conmigo",
+"me haces pensar en cómo sería tenerte cerca",
+"no dejo de imaginar momentos contigo",
+"me tienes completamente atrapado",
+"me haces querer más",
+"esto ya se volvió intenso",
+"no puedo ignorar lo que siento",
+"me gustas demasiado en serio",
+"esto ya no es juego",
+"me haces sentir diferente",
+
+"no dejo de imaginarte cerca",
+"me haces querer abrazarte",
+"me haces pensar en ti todo el tiempo",
+"esto ya es otra cosa",
+"me tienes completamente metido",
+"me haces perder el control poquito",
+"no puedo dejar de pensarte ni un segundo",
+"me encantas demasiado",
+"esto ya es intenso",
+"me haces querer más de lo normal",
+
+"me provocas 😏",
+"no sabes lo que causas en mí",
+"me haces pensar en cosas contigo",
+"esto ya no es inocente",
+"me gustas demasiado",
+"no dejo de imaginarte",
+"me tienes completamente atrapado",
+"esto ya se siente fuerte",
+"me haces querer tenerte cerca",
+"me estás volviendo loco",
+
+"me haces imaginarte conmigo 🔥",
+"no dejo de pensarte ni un momento",
+"me tienes mal",
+"esto ya es deseo",
+"me provocas demasiado",
+"me haces querer más de ti",
+"no puedo controlarlo",
+"me encantas demasiado",
+"me haces perder el control",
+"esto ya no es solo bonito",
+
+"me haces desear tenerte cerca",
+"no dejo de imaginarte conmigo",
+"me tienes completamente atrapado",
+"esto ya es demasiado",
+"me haces pensar en ti todo el tiempo",
+"me vuelves loco 🔥",
+"no puedo dejar de imaginarte",
+"me haces querer más y más",
+"esto ya es fuerte",
+"me provocas demasiado",
+
+"no puedo controlarme contigo",
+"me haces pensar en tenerte cerca",
+"esto ya es intenso",
+"me haces perder el control",
+"no dejo de imaginarte",
+"me tienes completamente atrapado",
+"esto ya no es juego",
+"me haces querer más",
+"me provocas demasiado",
+"esto ya es otra cosa",
+
+"si estuvieras aquí… sería diferente",
+"no sabes lo que me haces imaginar",
+"me haces querer tenerte cerca de verdad",
+"esto ya es demasiado fuerte",
+"no podría controlarme contigo",
+"me tienes completamente atrapado",
+"esto ya es deseo real",
+"no dejo de pensar en tenerte",
+"me haces perder el control de verdad",
+"esto ya no es leve",
+
+"me haces imaginarte conmigo de verdad",
+"no podría ignorarte aunque quisiera",
+"me tienes completamente metido en esto",
+"esto ya no es solo pensar",
+"me haces querer más de ti",
+"no dejo de imaginarte cerca",
+"esto ya es fuerte",
+"me provocas demasiado",
+"no puedo controlarlo contigo",
+"esto ya es real",
+
+"si estuvieras aquí… no sería tranquilo",
+"no dejaría que te fueras tan fácil",
+"me haces pensar en tenerte cerca",
+"no habría distancia entre nosotros",
+"esto ya es demasiado",
+"me haces querer sentirte cerca",
+"no podría controlarme",
+"esto ya es deseo puro",
+"me tienes completamente atrapado",
+"no dejo de imaginarte conmigo",
+
+"no habría forma de ignorarte",
+"me haces querer acercarme más",
+"esto ya es otra cosa",
+"me provocas demasiado",
+"no podría controlarme contigo",
+"esto ya es fuerte",
+"me haces querer más",
+"no dejo de imaginarte cerca",
+"esto ya no es leve",
+"me tienes completamente atrapado",
+
+// 🔥 últimos 10 intensos (bien hechos)
+"si te tuviera aquí… no me alejaría ni un segundo",
+"me haces querer sentirte más cerca de lo normal",
+"no habría espacio entre tú y yo",
+"me tienes con ganas de acercarme más y más",
+"no podría quedarme tranquilo si estuvieras aquí",
+"me haces querer perder el control contigo",
+"esto ya es demasiado fuerte para ignorarlo",
+"no dejaría de buscarte ni un segundo",
+"me tienes completamente dominado",
+"ya no es solo querer… es desearte demasiado"];
+
 let clicks=0;
 heart.onclick=(e)=>{
 clicks++;
 count.innerText=clicks;
-msgExtra.innerText=messages[clicks-1] || "ya no tengo palabras… 😏🔥";
-
-let h=document.createElement('div');
-h.className='heartFloat';
-h.innerText='❤️';
-h.style.left=e.clientX+'px';
-h.style.top=e.clientY+'px';
-document.body.appendChild(h);
-setTimeout(()=>h.remove(),2000);
-
-if(clicks===200) msgExtra.innerText="si llegaste hasta aquí… es porque de verdad te importo ❤️";
-if(clicks===201){
-msgExtra.innerHTML=`🔥 ahora sí<br><button onclick="openSecret()">Abrir 😏</button>`;
-}
+msgExtra.innerText=messages[clicks-1];
 };
+
+// día 2
+function day2More(){
+day2text.innerText="cada vez que pienso en ti… sonrío";
+}
+
+// día 3
+function day3More(){
+day3text.innerText="no sabes lo que me haces imaginar 😏";
+}
 
 // slider
 slider.oninput=function(){
 let v=this.value;
-sliderText.innerText=v<50?"te estás soltando 😏":"ya no te controlas 🔥";
-if(v==100) openBtn.style.display="block";
+sliderText.innerText=
+v<20?"tranquilo 😌":
+v<40?"ya empezó 😏":
+v<60?"te estás soltando 🔥":
+v<80?"ya no te controlas":
+"🔥 peligro total";
 };
-openBtn.onclick=openSecret;
 
 // puzzle
-let puzzle=document.getElementById("puzzle");
-let pieces=[];
 for(let i=0;i<9;i++){
 let d=document.createElement("div");
 d.className="piece";
-d.draggable=true;
-let x=(i%3)*-100;
-let y=Math.floor(i/3)*-100;
-d.style.backgroundPosition=`${x}px ${y}px`;
-d.ondragstart=e=>e.dataTransfer.setData("i",i);
-d.ondragover=e=>e.preventDefault();
-d.ondrop=e=>{
-let from=e.dataTransfer.getData("i");
-let temp=pieces[from].style.backgroundPosition;
-pieces[from].style.backgroundPosition=d.style.backgroundPosition;
-d.style.backgroundPosition=temp;
-checkPuzzle();
-};
-pieces.push(d);
 puzzle.appendChild(d);
-}
-
-function checkPuzzle(){
-let ok=true;
-pieces.forEach((p,i)=>{
-let x=(i%3)*-100+"px";
-let y=Math.floor(i/3)*-100+"px";
-if(p.style.backgroundPosition!==`${x} ${y}`) ok=false;
-});
-if(ok){puzzleMsg.innerText="lo lograste 😏🔥";openSecret();}
 }
 
 // cita
 function date(t){
-dateMsg.innerText=
-t=="peli"?"3...2...1 🎬 imagíname contigo":
-t=="cena"?"cenemos juntos ❤️":
-"quédate conmigo 😏";
+dateMsg.innerText={
+peli:"imagina que estamos abrazados 🍿",
+cena:"no dejaría de mirarte ❤️",
+chat:"me quedaría contigo toda la noche 😏"
+}[t];
 }
 
 // login
 function login(){
-if(pass.value=="amor123"){
+if(pass.value=="Noah Losano Villegas"){
 gallery.style.display="block";
-loginMsg.innerText="acceso 😏";
-}else loginMsg.innerText="no 😈";
-}
-
-// overlay
-function openSecret(){
-overlay.style.opacity=1;
-overlay.style.pointerEvents="all";
-}
-overlay.onclick=()=>{
-overlay.style.opacity=0;
-overlay.style.pointerEvents="none";
+loginMsg.innerText="sabía que eras tú ❤️";
+}else loginMsg.innerText="piénsalo mejor…";
 }
 
 </script>
