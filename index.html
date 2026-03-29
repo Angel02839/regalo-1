@@ -3,284 +3,284 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Para Ti 💖</title>
+<title>Modo DIOS 💖</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <style>
-body{
-margin:0;
-font-family:sans-serif;
-background:#000;
-color:white;
-overflow:hidden;
-}
-
-/* animaciones */
-.fadeIn{
-animation:fadeIn .5s forwards;
-}
-.fadeOut{
-animation:fadeOut .4s forwards;
-}
-@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeOut{to{opacity:0;transform:translateY(-20px)}}
+body{margin:0;font-family:sans-serif;background:#000;color:white;text-align:center}
 
 /* secciones */
-section{
-position:absolute;
-width:100%;
-height:100%;
-display:none;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-padding:20px;
-}
-.active{display:flex}
+section{display:none;padding:20px}
+.active{display:block}
 
 /* botones */
 button{
-padding:15px;
+padding:12px 20px;
 margin:10px;
 border:none;
-border-radius:20px;
+border-radius:15px;
 background:#ff2e63;
 color:white;
-width:80%;
-max-width:300px;
-font-size:16px;
 }
 
 /* menú */
-#menu button{
-background:#111;
-border:1px solid #ff2e63;
-}
+#menu button{background:#111;border:1px solid #ff2e63}
 
-/* bloqueado */
-.locked{
-opacity:.4;
-}
+/* mapa */
+#map{height:250px;border-radius:15px;margin:20px}
 
 /* corazón */
-#heart{
-font-size:70px;
-animation:beat 1s infinite;
-}
-@keyframes beat{50%{transform:scale(1.2)}}
+#heart{font-size:70px;cursor:pointer}
+
+/* slider */
+#slider{width:80%}
 
 /* overlay */
 #overlay{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:black;
-display:flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-opacity:0;
-pointer-events:none;
-transition:.5s;
+position:fixed;top:0;left:0;width:100%;height:100%;
+background:black;display:flex;justify-content:center;align-items:center;
+flex-direction:column;opacity:0;pointer-events:none;transition:.5s;
 }
 
-#overlay img{
-width:90%;
-max-width:300px;
-border-radius:20px;
+/* puzzle */
+#puzzle{
+width:300px;height:300px;margin:auto;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:2px;
+}
+.piece{
+width:100%;height:100%;
+background-image:url('tu_foto.jpg');
+background-size:300px 300px;
 }
 
-/* slider */
-#slider{width:90%}
+/* galería */
+#gallery img{
+width:200px;
+border-radius:15px;
+margin:10px;
+}
 </style>
 </head>
 
 <body>
 
-<!-- MENÚ -->
-<section id="menu" class="active fadeIn">
+<!-- MENU -->
+<section id="menu" class="active">
 <h1>💖 Para Ti</h1>
-
-<div id="daysContainer"></div>
-
+<button onclick="showDay(1)">Día 1</button>
+<button onclick="showDay(2)">Día 2</button>
+<button onclick="showDay(3)">Día 3</button>
+<button onclick="showDay(4)">Día 4</button>
+<button onclick="showDay(5)">Día 5</button>
+<button onclick="showDay(6)">Día 6</button>
+<button onclick="showDay(7)">Día 7</button>
 </section>
 
-<!-- DÍA 1 -->
+<!-- DIA 1 -->
 <section id="day1">
-<h1>💌 Día 1</h1>
-<p>Aquí tu carta ❤️</p>
-<button onclick="goMenu()">⬅️ Volver</button>
-<button onclick="nextDay()">➡️ Siguiente</button>
+<h2>🌍 Aunque estemos lejos</h2>
+<div id="map"></div>
+<p id="distanceText"></p>
+<button onclick="next('heartSec')">Ven conmigo</button>
+<button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- DÍA 2 -->
-<section id="day2">
-<h1>🌍 Día 2</h1>
-<p>Estamos lejos pero juntos ❤️</p>
-<button onclick="goMenu()">⬅️ Volver</button>
-<button onclick="nextDay()">➡️ Siguiente</button>
-</section>
-
-<!-- DÍA 3 -->
-<section id="day3">
-<h1>💓 Día 3</h1>
+<section id="heartSec">
+<h2>💓 Tócame</h2>
 <div id="heart">❤️</div>
 <p id="count">0</p>
-<p id="msg"></p>
-<button onclick="goMenu()">⬅️ Volver</button>
-<button onclick="nextDay()">➡️ Siguiente</button>
+<p id="msgExtra"></p>
+<button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- DÍA 4 -->
+<!-- DIA 2 -->
+<section id="day2">
+<h2>💌 Día 2</h2>
+<p>Te pienso todo el tiempo ❤️</p>
+<button onclick="openSecret()">Ver más</button>
+<button onclick="goMenu()">⬅️</button>
+</section>
+
+<!-- DIA 3 -->
+<section id="day3">
+<h2>😏 Día 3</h2>
+<p>No dejo de imaginarte...</p>
+<button onclick="openSecret()">Quiero verte</button>
+<button onclick="goMenu()">⬅️</button>
+</section>
+
+<!-- DIA 4 -->
 <section id="day4">
-<h1>🔥 Día 4</h1>
+<h2>🔥 ¿Cuánto me deseas?</h2>
 <input type="range" id="slider" min="0" max="100">
-<p id="sliderTxt"></p>
+<p id="sliderText"></p>
 <button id="openBtn" style="display:none;">Abrir</button>
-<button onclick="goMenu()">⬅️ Volver</button>
-<button onclick="nextDay()">➡️ Siguiente</button>
+<button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- DÍA 5 -->
+<!-- DIA 5 PUZZLE -->
 <section id="day5">
-<h1>🧩 Día 5</h1>
-<p>Tu sorpresa aquí 😏</p>
-<button onclick="goMenu()">⬅️ Volver</button>
-<button onclick="nextDay()">➡️ Siguiente</button>
+<h2>🧩 Ármame…</h2>
+<div id="puzzle"></div>
+<p id="puzzleMsg"></p>
+<button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- DÍA 6 -->
+<!-- DIA 6 -->
 <section id="day6">
-<h1>💻 Día 6</h1>
+<h2>💻 Cita conmigo</h2>
 <button onclick="date('peli')">🍿</button>
 <button onclick="date('cena')">🍔</button>
 <button onclick="date('chat')">💬</button>
 <p id="dateMsg"></p>
-<button onclick="goMenu()">⬅️ Volver</button>
-<button onclick="nextDay()">➡️ Siguiente</button>
+<button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- DÍA 7 -->
+<!-- DIA 7 -->
 <section id="day7">
-<h1>🔐 Día 7</h1>
+<h2>🔐 Solo para ti</h2>
 <input id="pass" placeholder="contraseña">
 <button onclick="login()">Entrar</button>
+
+<div id="gallery" style="display:none;">
+<img src="foto1.jpg">
+<img src="foto2.jpg">
+<img src="foto3.jpg">
+<p>solo tú 😏</p>
+</div>
+
 <p id="loginMsg"></p>
-<button onclick="goMenu()">⬅️ Volver</button>
+<button onclick="goMenu()">⬅️</button>
 </section>
 
 <!-- overlay -->
 <div id="overlay">
-<img src="tu_foto.jpg">
+<img src="tu_foto.jpg" width="250">
 <p>solo tú 😏</p>
 </div>
 
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
 
-// ⚡ DEBUG
-const DEBUG=true;
-let DEBUG_DAY=7;
-
-// tiempo real
-let start=localStorage.getItem("start");
-if(!start){
-start=Date.now();
-localStorage.setItem("start",start);
+// navegación
+function showDay(n){
+hideAll();
+document.getElementById("day"+n).classList.add("active");
 }
-
-function getDay(){
-if(DEBUG) return DEBUG_DAY;
-return Math.min(Math.floor((Date.now()-start)/(1000*60*60*24))+1,7);
+function next(id){
+hideAll();
+document.getElementById(id).classList.add("active");
 }
-
-// menú dinámico
-function renderMenu(){
-let container=document.getElementById("daysContainer");
-container.innerHTML="";
-
-let unlocked=getDay();
-
-for(let i=1;i<=7;i++){
-let btn=document.createElement("button");
-
-btn.innerText="Día "+i;
-
-if(i<=unlocked){
-btn.onclick=()=>show("day"+i);
-}else{
-btn.classList.add("locked");
-btn.innerText="🔒 Día "+i;
-}
-
-container.appendChild(btn);
-}
-}
-
-renderMenu();
-
-// navegación animada
-function show(id){
-let current=document.querySelector(".active");
-if(current){
-current.classList.add("fadeOut");
-setTimeout(()=>{
-current.classList.remove("active","fadeOut");
-
-let next=document.getElementById(id);
-next.classList.add("active","fadeIn");
-},300);
-}else{
-document.getElementById(id).classList.add("active","fadeIn");
-}
-}
-
 function goMenu(){
-show("menu");
+hideAll();
+document.getElementById("menu").classList.add("active");
+}
+function hideAll(){
+document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
 }
 
-// siguiente día
-function nextDay(){
-let current=getDay();
-let next=Math.min(current+1,7);
+// MAPA
+let city1=[24.781451,-107.353889];
+let city2=[19.8646463,-100.8208776];
 
-if(DEBUG){
-DEBUG_DAY=next;
-renderMenu();
-show("day"+next);
-}else{
-show("day"+next);
+let map=L.map('map').setView(city1,5);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+L.marker(city1).addTo(map);
+L.marker(city2).addTo(map);
+L.polyline([city1,city2],{color:'red'}).addTo(map);
+
+let dist=Math.sqrt((city1[0]-city2[0])**2+(city1[1]-city2[1])**2)*111;
+document.getElementById('distanceText').innerText=
+`Estamos a ${Math.floor(dist)} km… pero te siento aquí ❤️`;
+
+// 💓 MENSAJES
+let messages=[];
+for(let i=0;i<200;i++){
+if(i<60) messages.push("me encantas ❤️");
+else if(i<120) messages.push("me provocas 😏");
+else messages.push("te deseo 🔥");
 }
-}
 
-// 💓 corazón
-let c=0;
-let heart=document.getElementById("heart");
+let clicks=0;
+document.getElementById("heart").onclick=()=>{
+clicks++;
+document.getElementById("count").innerText=clicks;
+document.getElementById("msgExtra").innerText=messages[clicks-1] || messages[199];
 
-heart.onclick=()=>{
-c++;
-document.getElementById("count").innerText=c;
-
-let msg=c<70?"me encantas ❤️":c<140?"me provocas 😏":"te deseo 🔥";
-document.getElementById("msg").innerText=msg;
-
-if(c==200) openSecret();
-}
+if(clicks==200) document.getElementById("msgExtra").innerText="dame uno más… 😏";
+if(clicks==201) openSecret();
+};
 
 // slider
-let slider=document.getElementById("slider");
-slider.oninput=()=>{
-let v=slider.value;
-
-document.getElementById("sliderTxt").innerText=
+document.getElementById("slider").oninput=function(){
+let v=this.value;
+document.getElementById("sliderText").innerText=
 v<50?"te estás soltando 😏":"ya no te controlas 🔥";
 
 if(v==100){
 document.getElementById("openBtn").style.display="block";
 }
-}
+};
 
 document.getElementById("openBtn").onclick=openSecret;
+
+// 🧩 PUZZLE DRAG REAL
+let puzzle=document.getElementById("puzzle");
+let pieces=[];
+
+for(let i=0;i<9;i++){
+let div=document.createElement("div");
+div.className="piece";
+div.draggable=true;
+
+let x=(i%3)*-100;
+let y=Math.floor(i/3)*-100;
+div.style.backgroundPosition=`${x}px ${y}px`;
+
+div.dataset.index=i;
+
+div.ondragstart=e=>{
+e.dataTransfer.setData("text",i);
+};
+
+div.ondragover=e=>e.preventDefault();
+
+div.ondrop=e=>{
+let from=e.dataTransfer.getData("text");
+let to=i;
+
+let temp=pieces[from].style.backgroundPosition;
+pieces[from].style.backgroundPosition=pieces[to].style.backgroundPosition;
+pieces[to].style.backgroundPosition=temp;
+
+checkPuzzle();
+};
+
+pieces.push(div);
+puzzle.appendChild(div);
+}
+
+function checkPuzzle(){
+let correct=true;
+pieces.forEach((p,i)=>{
+let x=(i%3)*-100+"px";
+let y=Math.floor(i/3)*-100+"px";
+
+if(p.style.backgroundPosition!==`${x} ${y}`){
+correct=false;
+}
+});
+
+if(correct){
+document.getElementById("puzzleMsg").innerText="lo lograste 😏🔥";
+openSecret();
+}
+}
 
 // cita
 function date(t){
@@ -292,18 +292,18 @@ t=="cena"?"cenemos ❤️":
 
 // login
 function login(){
-if(document.getElementById("pass").value=="amor"){
-openSecret();
+if(document.getElementById("pass").value=="amor123"){
+document.getElementById("gallery").style.display="block";
+document.getElementById("loginMsg").innerText="acceso 😏";
 }else{
-document.getElementById("loginMsg").innerText="no 😏";
+document.getElementById("loginMsg").innerText="no 😈";
 }
 }
 
 // reveal
 function openSecret(){
-let o=document.getElementById("overlay");
-o.style.opacity=1;
-o.style.pointerEvents="all";
+document.getElementById("overlay").style.opacity=1;
+document.getElementById("overlay").style.pointerEvents="all";
 }
 
 document.getElementById("overlay").onclick=function(){
