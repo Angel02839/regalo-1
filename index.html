@@ -8,13 +8,28 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <style>
-body{margin:0;font-family:sans-serif;background:#000;color:white;text-align:center}
+body{
+margin:0;
+font-family:sans-serif;
+background:#000;
+color:white;
+text-align:center;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+min-height:100vh;
+}
 
-/* secciones */
-section{display:none;padding:20px}
+section{
+display:none;
+padding:20px;
+width:100%;
+max-width:400px;
+}
+
 .active{display:block}
 
-/* botones */
 button{
 padding:12px 20px;
 margin:10px;
@@ -24,48 +39,69 @@ background:#ff2e63;
 color:white;
 }
 
-/* menú */
-#menu button{background:#111;border:1px solid #ff2e63}
+#menu button{
+background:#111;
+border:1px solid #ff2e63
+}
 
-/* mapa */
-#map{height:250px;border-radius:15px;margin:20px}
+#map{
+height:250px;
+border-radius:15px;
+margin:20px
+}
 
-/* corazón */
 #heart{font-size:70px;cursor:pointer}
-
-/* slider */
 #slider{width:80%}
 
 /* overlay */
 #overlay{
-position:fixed;top:0;left:0;width:100%;height:100%;
-background:black;display:flex;justify-content:center;align-items:center;
-flex-direction:column;opacity:0;pointer-events:none;transition:.5s;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:black;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+opacity:0;
+pointer-events:none;
+transition:.5s;
 }
 
 /* puzzle */
 #puzzle{
-width:300px;height:300px;margin:auto;
+width:300px;
+height:300px;
+margin:auto;
 display:grid;
 grid-template-columns:repeat(3,1fr);
 gap:2px;
 }
 .piece{
-width:100%;height:100%;
+width:100%;
+height:100%;
 background-image:url('tu_foto.jpg');
 background-size:300px 300px;
 }
 
-/* galería */
-#gallery img{
-width:200px;
-border-radius:15px;
-margin:10px;
+/* corazones */
+.heartFloat{
+position:fixed;
+color:#ff2e63;
+font-size:20px;
+animation:float 2s linear;
+}
+@keyframes float{
+to{transform:translateY(-200px);opacity:0}
 }
 </style>
 </head>
 
 <body>
+
+<audio id="music" src="music.mp3" loop></audio>
 
 <!-- MENU -->
 <section id="menu" class="active">
@@ -121,7 +157,7 @@ margin:10px;
 <button onclick="goMenu()">⬅️</button>
 </section>
 
-<!-- DIA 5 PUZZLE -->
+<!-- DIA 5 -->
 <section id="day5">
 <h2>🧩 Ármame…</h2>
 <div id="puzzle"></div>
@@ -146,10 +182,9 @@ margin:10px;
 <button onclick="login()">Entrar</button>
 
 <div id="gallery" style="display:none;">
-<img src="foto1.jpg">
-<img src="foto2.jpg">
-<img src="foto3.jpg">
-<p>solo tú 😏</p>
+<img src="foto1.jpg" width="200">
+<img src="foto2.jpg" width="200">
+<img src="foto3.jpg" width="200">
 </div>
 
 <p id="loginMsg"></p>
@@ -158,160 +193,132 @@ margin:10px;
 
 <!-- overlay -->
 <div id="overlay">
-<img src="tu_foto.jpg" width="250">
-<p>solo tú 😏</p>
+<img src="tu_foto.jpg" style="width:260px;border-radius:20px;">
+<p>si llegaste hasta aquí… es porque eres muy especial para mí ❤️</p>
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
 
+// música
+document.body.addEventListener("click",()=>{
+document.getElementById("music").play();
+},{once:true});
+
 // navegación
-function showDay(n){
-hideAll();
-document.getElementById("day"+n).classList.add("active");
-}
-function next(id){
-hideAll();
-document.getElementById(id).classList.add("active");
-}
-function goMenu(){
-hideAll();
-document.getElementById("menu").classList.add("active");
-}
-function hideAll(){
-document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
-}
+function showDay(n){hideAll();document.getElementById("day"+n).classList.add("active");}
+function next(id){hideAll();document.getElementById(id).classList.add("active");}
+function goMenu(){hideAll();document.getElementById("menu").classList.add("active");}
+function hideAll(){document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));}
 
 // MAPA
-let city1=[24.781451,-107.353889];
-let city2=[19.8646463,-100.8208776];
-
+let city1=[24.78,-107.35];
+let city2=[19.86,-100.82];
 let map=L.map('map').setView(city1,5);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
 L.marker(city1).addTo(map);
 L.marker(city2).addTo(map);
 L.polyline([city1,city2],{color:'red'}).addTo(map);
-
 let dist=Math.sqrt((city1[0]-city2[0])**2+(city1[1]-city2[1])**2)*111;
-document.getElementById('distanceText').innerText=
-`Estamos a ${Math.floor(dist)} km… pero te siento aquí ❤️`;
+distanceText.innerText=`Estamos a ${Math.floor(dist)} km… pero te siento aquí ❤️`;
 
-// 💓 MENSAJES
-let messages=[];
-for(let i=0;i<200;i++){
-if(i<60) messages.push("me encantas ❤️");
-else if(i<120) messages.push("me provocas 😏");
-else messages.push("te deseo 🔥");
-}
+// MENSAJES
+const messages = Array.from({length:200}, (_,i)=>{
+if(i<50) return "me haces sonreír cada vez más ❤️";
+if(i<100) return "me estás gustando demasiado 😏";
+if(i<150) return "no dejo de imaginarte 🔥";
+return "te deseo cada vez más 🔥";
+});
 
+// corazón
 let clicks=0;
-document.getElementById("heart").onclick=()=>{
+heart.onclick=(e)=>{
 clicks++;
-document.getElementById("count").innerText=clicks;
-document.getElementById("msgExtra").innerText=messages[clicks-1] || messages[199];
+count.innerText=clicks;
+msgExtra.innerText=messages[clicks-1] || "ya no tengo palabras… 😏🔥";
 
-if(clicks==200) document.getElementById("msgExtra").innerText="dame uno más… 😏";
-if(clicks==201) openSecret();
+let h=document.createElement('div');
+h.className='heartFloat';
+h.innerText='❤️';
+h.style.left=e.clientX+'px';
+h.style.top=e.clientY+'px';
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),2000);
+
+if(clicks===200) msgExtra.innerText="si llegaste hasta aquí… es porque de verdad te importo ❤️";
+if(clicks===201){
+msgExtra.innerHTML=`🔥 ahora sí<br><button onclick="openSecret()">Abrir 😏</button>`;
+}
 };
 
 // slider
-document.getElementById("slider").oninput=function(){
+slider.oninput=function(){
 let v=this.value;
-document.getElementById("sliderText").innerText=
-v<50?"te estás soltando 😏":"ya no te controlas 🔥";
-
-if(v==100){
-document.getElementById("openBtn").style.display="block";
-}
+sliderText.innerText=v<50?"te estás soltando 😏":"ya no te controlas 🔥";
+if(v==100) openBtn.style.display="block";
 };
+openBtn.onclick=openSecret;
 
-document.getElementById("openBtn").onclick=openSecret;
-
-// 🧩 PUZZLE DRAG REAL
+// puzzle
 let puzzle=document.getElementById("puzzle");
 let pieces=[];
-
 for(let i=0;i<9;i++){
-let div=document.createElement("div");
-div.className="piece";
-div.draggable=true;
-
+let d=document.createElement("div");
+d.className="piece";
+d.draggable=true;
 let x=(i%3)*-100;
 let y=Math.floor(i/3)*-100;
-div.style.backgroundPosition=`${x}px ${y}px`;
-
-div.dataset.index=i;
-
-div.ondragstart=e=>{
-e.dataTransfer.setData("text",i);
-};
-
-div.ondragover=e=>e.preventDefault();
-
-div.ondrop=e=>{
-let from=e.dataTransfer.getData("text");
-let to=i;
-
+d.style.backgroundPosition=`${x}px ${y}px`;
+d.ondragstart=e=>e.dataTransfer.setData("i",i);
+d.ondragover=e=>e.preventDefault();
+d.ondrop=e=>{
+let from=e.dataTransfer.getData("i");
 let temp=pieces[from].style.backgroundPosition;
-pieces[from].style.backgroundPosition=pieces[to].style.backgroundPosition;
-pieces[to].style.backgroundPosition=temp;
-
+pieces[from].style.backgroundPosition=d.style.backgroundPosition;
+d.style.backgroundPosition=temp;
 checkPuzzle();
 };
-
-pieces.push(div);
-puzzle.appendChild(div);
+pieces.push(d);
+puzzle.appendChild(d);
 }
 
 function checkPuzzle(){
-let correct=true;
+let ok=true;
 pieces.forEach((p,i)=>{
 let x=(i%3)*-100+"px";
 let y=Math.floor(i/3)*-100+"px";
-
-if(p.style.backgroundPosition!==`${x} ${y}`){
-correct=false;
-}
+if(p.style.backgroundPosition!==`${x} ${y}`) ok=false;
 });
-
-if(correct){
-document.getElementById("puzzleMsg").innerText="lo lograste 😏🔥";
-openSecret();
-}
+if(ok){puzzleMsg.innerText="lo lograste 😏🔥";openSecret();}
 }
 
 // cita
 function date(t){
-document.getElementById("dateMsg").innerText=
-t=="peli"?"3...2...1 🎬":
-t=="cena"?"cenemos ❤️":
+dateMsg.innerText=
+t=="peli"?"3...2...1 🎬 imagíname contigo":
+t=="cena"?"cenemos juntos ❤️":
 "quédate conmigo 😏";
 }
 
 // login
 function login(){
-if(document.getElementById("pass").value=="amor123"){
-document.getElementById("gallery").style.display="block";
-document.getElementById("loginMsg").innerText="acceso 😏";
-}else{
-document.getElementById("loginMsg").innerText="no 😈";
-}
+if(pass.value=="amor123"){
+gallery.style.display="block";
+loginMsg.innerText="acceso 😏";
+}else loginMsg.innerText="no 😈";
 }
 
-// reveal
+// overlay
 function openSecret(){
-document.getElementById("overlay").style.opacity=1;
-document.getElementById("overlay").style.pointerEvents="all";
+overlay.style.opacity=1;
+overlay.style.pointerEvents="all";
 }
-
-document.getElementById("overlay").onclick=function(){
-this.style.opacity=0;
-this.style.pointerEvents="none";
+overlay.onclick=()=>{
+overlay.style.opacity=0;
+overlay.style.pointerEvents="none";
 }
 
 </script>
-
 </body>
 </html>
