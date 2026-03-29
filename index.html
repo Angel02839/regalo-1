@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modo DIOS 💖</title>
+<title>Para Ti 💖</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
@@ -15,259 +15,233 @@ background:#000;
 color:white;
 text-align:center;
 overflow:hidden;
-transition:.5s;
 }
 
-section{display:none;padding:30px}
-.active{display:block}
+/* secciones */
+section{
+display:none;
+min-height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+padding:20px;
+}
+.active{display:flex}
 
+/* botones */
 button{
-padding:12px 25px;
+padding:15px;
 margin:10px;
 border:none;
-border-radius:15px;
+border-radius:20px;
 background:#ff2e63;
 color:white;
-font-size:16px;
-cursor:pointer;
-transition:.3s;
+width:80%;
+max-width:300px;
 }
-button:hover{transform:scale(1.1)}
 
+/* corazón */
 #heart{
-font-size:80px;
-cursor:pointer;
-transition:.2s;
+font-size:70px;
+animation:beat 1s infinite;
 }
-#heart:active{transform:scale(1.4)}
-
-#slider{width:80%}
-
-.fade{animation:fade .6s}
-@keyframes fade{from{opacity:0}to{opacity:1}}
-
-/* estrellas */
-.star{
-position:absolute;
-width:2px;
-height:2px;
-background:white;
-animation:blink 2s infinite;
-}
-@keyframes blink{
-0%,100%{opacity:0}
-50%{opacity:1}
+@keyframes beat{
+50%{transform:scale(1.2)}
 }
 
-/* corazones */
-.heartFloat{
-position:fixed;
-color:#ff2e63;
-font-size:20px;
-animation:float 2s linear;
-}
-@keyframes float{
-to{transform:translateY(-200px);opacity:0}
-}
-
+/* mapa */
 #map{
-height:300px;
+height:250px;
+width:90%;
 border-radius:15px;
-margin:20px;
 }
 
-/* REVEAL PRO */
+/* overlay */
 #overlay{
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-background:rgba(0,0,0,0.95);
+background:black;
 display:flex;
-flex-direction:column;
 justify-content:center;
 align-items:center;
+flex-direction:column;
 opacity:0;
 pointer-events:none;
 transition:.5s;
-z-index:999;
 }
 
-#secretImg{
-width:280px;
+#overlay img{
+width:90%;
+max-width:300px;
 border-radius:20px;
-transform:scale(0.5);
-opacity:0;
-transition:.5s;
 }
 
-#secretText{
-margin-top:20px;
-opacity:0;
-transition:.5s;
-}
+/* slider */
+#slider{width:90%}
 </style>
 </head>
 
 <body>
 
-<!-- 🌍 INICIO -->
-<section id="start" class="active fade">
-<h1>🌍 Aunque estemos lejos</h1>
-<div id="map"></div>
-<p id="distanceText"></p>
-<button onclick="next('extraño')">Ven conmigo</button>
+<!-- DIA 1 -->
+<section id="day1">
+<h1>💌 Día 1</h1>
+<p>Aquí escribe tu carta ❤️</p>
+<button onclick="next('heartSec')">Sentirme</button>
 </section>
 
-<!-- 💓 CORAZÓN -->
-<section id="extraño" class="fade">
-<h1>💓 Tócame cuando me extrañes</h1>
-<div id="heart" onclick="countClicks(event)">❤️</div>
+<section id="heartSec">
+<h2>💓 Tócame</h2>
+<div id="heart">❤️</div>
 <p id="count">0</p>
-<p id="msgExtra"></p>
-<button onclick="next('sliderSec')">Siguiente</button>
+<p id="msg"></p>
+<p id="extra"></p>
 </section>
 
-<!-- 🔥 SLIDER -->
-<section id="sliderSec" class="fade">
-<h1>🔥 ¿Cuánto me deseas?</h1>
-
-<input type="range" min="0" max="100" id="slider" oninput="updateSlider()">
-<p id="sliderText"></p>
-
-<button id="openBtn" style="display:none;" onclick="openSecret()">
-🔥 Abrir 🔥
-</button>
-
-<button onclick="next('final')">Final</button>
+<!-- DIA 2 -->
+<section id="day2">
+<h1>🌍 Día 2</h1>
+<div id="map"></div>
+<p id="dist"></p>
+<p>Aquí tu carta bonita 💌</p>
 </section>
 
-<!-- 💖 FINAL -->
-<section id="final" class="fade">
-<h1>💖 Siempre tú</h1>
-<p>Esto es solo el inicio de todo lo que quiero contigo ❤️</p>
+<!-- DIA 3 -->
+<section id="day3">
+<h1>😏 Día 3</h1>
+<button onclick="openSecret()">Quiero verte</button>
 </section>
 
-<!-- 💥 OVERLAY -->
+<!-- DIA 4 -->
+<section id="day4">
+<h1>🔥 Día 4</h1>
+<input type="range" id="slider" min="0" max="100">
+<p id="sliderTxt"></p>
+<button id="openBtn" style="display:none;">Abrir</button>
+</section>
+
+<!-- DIA 5 -->
+<section id="day5">
+<h1>🧩 Día 5</h1>
+<p>Aquí puedes poner tu puzzle</p>
+</section>
+
+<!-- DIA 6 -->
+<section id="day6">
+<h1>💻 Día 6</h1>
+<button onclick="date('peli')">🍿</button>
+<button onclick="date('cena')">🍔</button>
+<button onclick="date('chat')">💬</button>
+<p id="dateMsg"></p>
+</section>
+
+<!-- DIA 7 -->
+<section id="day7">
+<h1>🔐 Día 7</h1>
+<input id="pass" placeholder="contraseña">
+<button onclick="login()">Entrar</button>
+<p id="loginMsg"></p>
+</section>
+
+<!-- overlay -->
 <div id="overlay">
-<img src="tu_foto.jpg" id="secretImg">
-<p id="secretText">solo tú puedes verme así 😏</p>
+<img src="tu_foto.jpg">
+<p>solo tú 😏</p>
 </div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
 
-// navegación
-function next(id){
-document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
-document.getElementById(id).classList.add('active');
+// 📅 SISTEMA 7 DÍAS
+let start=localStorage.getItem("start");
+if(!start){
+start=Date.now();
+localStorage.setItem("start",start);
 }
 
-// 🌍 MAPA
-let city1=[24.781451,-107.353889];
-let city2=[19.8646463,-100.8208776];
+function getDay(){
+return Math.min(Math.floor((Date.now()-start)/(1000*60*60*24))+1,7);
+}
 
-let map=L.map('map').setView(city1,5);
+window.onload=()=>{
+let d=getDay();
+show("day"+d);
+}
 
+// navegación
+function show(id){
+document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+function next(id){ show(id); }
+
+// 💓 corazón
+let c=0;
+let heart=document.getElementById("heart");
+
+heart.onclick=e=>{
+c++;
+document.getElementById("count").innerText=c;
+
+let msg=c<70?"me encantas ❤️":c<140?"me provocas 😏":"te deseo 🔥";
+document.getElementById("msg").innerText=msg;
+
+if(c==200) document.getElementById("extra").innerText="dame uno más…";
+if(c==201) openSecret();
+}
+
+// 🌍 mapa
+let map=L.map('map').setView([24,-107],5);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-L.marker(city1).addTo(map);
-L.marker(city2).addTo(map);
-L.polyline([city1,city2],{color:'red'}).addTo(map);
+// 🔥 slider
+let slider=document.getElementById("slider");
+slider.oninput=()=>{
+let v=slider.value;
+document.getElementById("sliderTxt").innerText=
+v<50?"te estás soltando 😏":"ya no te controlas 🔥";
 
-let dx=city1[0]-city2[0];
-let dy=city1[1]-city2[1];
-let dist=Math.sqrt(dx*dx+dy*dy)*111;
-
-document.getElementById('distanceText').innerText =
-`Estamos a ${Math.floor(dist)} km… pero te siento aquí ❤️`;
-
-// ⭐ estrellas
-for(let i=0;i<100;i++){
-let s=document.createElement('div');
-s.className='star';
-s.style.top=Math.random()*100+'%';
-s.style.left=Math.random()*100+'%';
-document.body.appendChild(s);
-}
-
-// 💓 MENSAJES 200 PROGRESIVOS
-let messages=[];
-for(let i=0;i<200;i++){
-if(i<60) messages.push("me encantas ❤️");
-else if(i<120) messages.push("me provocas 😏");
-else messages.push("te deseo 🔥");
-}
-
-let clicks=0;
-
-function countClicks(e){
-clicks++;
-
-document.getElementById('count').innerText=clicks;
-document.getElementById('msgExtra').innerText=messages[clicks-1] || messages[199];
-
-// corazones flotando
-let h=document.createElement('div');
-h.className='heartFloat';
-h.innerText='❤️';
-h.style.left=e.clientX+'px';
-h.style.top=e.clientY+'px';
-document.body.appendChild(h);
-
-setTimeout(()=>h.remove(),2000);
-}
-
-// 🔥 SLIDER
-function updateSlider(){
-let val=document.getElementById('slider').value;
-let text="";
-
-if(val<10) text="apenas poquito 😅";
-else if(val<30) text="ya me estás pensando 😏";
-else if(val<50) text="te estás soltando...";
-else if(val<70) text="ya me deseas 😏";
-else if(val<90) text="ya no te aguantas...";
-else if(val<100) text="ya estás totalmente dentro 😏🔥";
-else text="ya no te controlas 🔥";
-
-document.getElementById('sliderText').innerText=text;
-
-if(val==100){
-document.getElementById('openBtn').style.display="inline-block";
+if(v==100){
+document.getElementById("openBtn").style.display="block";
 }
 }
 
-// 💥 REVEAL PRO
+// 💻 cita
+function date(t){
+document.getElementById("dateMsg").innerText=
+t=="peli"?"3...2...1 🎬":
+t=="cena"?"cenemos ❤️":
+"quédate conmigo 😏";
+}
+
+// 🔐 login
+function login(){
+if(document.getElementById("pass").value=="amor"){
+openSecret();
+}else{
+document.getElementById("loginMsg").innerText="no 😏";
+}
+}
+
+// 💥 reveal
 function openSecret(){
-
-let overlay=document.getElementById('overlay');
-let img=document.getElementById('secretImg');
-let text=document.getElementById('secretText');
-
-overlay.style.opacity="1";
-overlay.style.pointerEvents="all";
-
-setTimeout(()=>{
-img.style.transform="scale(1)";
-img.style.opacity="1";
-},200);
-
-setTimeout(()=>{
-text.style.opacity="1";
-},500);
-
-// zoom fondo
-document.body.style.transform="scale(1.05)";
+let o=document.getElementById("overlay");
+o.style.opacity=1;
+o.style.pointerEvents="all";
 }
 
-// cerrar al tocar
-document.getElementById('overlay').onclick=function(){
-this.style.opacity="0";
+document.getElementById("openBtn").onclick=openSecret;
+
+// cerrar
+document.getElementById("overlay").onclick=function(){
+this.style.opacity=0;
 this.style.pointerEvents="none";
-document.body.style.transform="scale(1)";
 }
 
 </script>
