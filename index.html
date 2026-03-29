@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <style>
+
+/* ========= DISEÑO GENERAL ========= */
 body{
 margin:0;
 font-family:sans-serif;
@@ -54,13 +56,15 @@ background:linear-gradient(45deg,#ff2e63,#ff6b81);
 color:white;
 box-shadow:0 0 10px #ff2e63;
 }
-button:hover{
-transform:scale(1.08);
-box-shadow:0 0 20px #ff2e63;
-}
 
+/* ========= ELEMENTOS ========= */
 #map{height:250px;border-radius:15px;margin:20px}
-#heart{font-size:70px;cursor:pointer;text-shadow:0 0 15px #ff2e63;}
+
+#heart{
+font-size:70px;
+cursor:pointer;
+text-shadow:0 0 15px #ff2e63;
+}
 
 #slider{
 width:80%;
@@ -70,16 +74,9 @@ background:linear-gradient(to right,#ff2e63 0%, #333 0%);
 box-shadow:0 0 10px #ff2e63;
 }
 
-#puzzle{
-width:300px;height:300px;margin:auto;
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:2px;
-}
-.piece{
-width:100%;height:100%;
-background-image:url('tu_foto.jpg');
-background-size:300px 300px;
+#hiddenPhoto{
+display:none;
+margin-top:15px;
 }
 
 .heartFloat{
@@ -91,16 +88,12 @@ animation:float 2s linear;
 to{transform:translateY(-200px);opacity:0}
 }
 
-#hiddenPhoto{
-transition:.3s;
-}
 </style>
 </head>
 
 <body>
 
-<audio id="music" src="music.mp3" loop></audio>
-
+<!-- ========= MENÚ ========= -->
 <section id="menu" class="active">
 <h1>💖 Para Ti</h1>
 <button onclick="showDay(1)">Día 1</button>
@@ -112,6 +105,7 @@ transition:.3s;
 <button onclick="showDay(7)">Día 7</button>
 </section>
 
+<!-- ========= DÍA 1 ========= -->
 <section id="day1">
 <h2>🌍 Aunque estemos lejos</h2>
 <div id="map"></div>
@@ -128,6 +122,7 @@ transition:.3s;
 <button onclick="goMenu()">⬅️</button>
 </section>
 
+<!-- ========= DÍA 2 ========= -->
 <section id="day2">
 <h2>💌 Día 2</h2>
 <p id="day2text">Hay algo en ti que no puedo ignorar…</p>
@@ -135,6 +130,7 @@ transition:.3s;
 <button onclick="goMenu()">⬅️</button>
 </section>
 
+<!-- ========= DÍA 3 ========= -->
 <section id="day3">
 <h2>😏 Día 3</h2>
 <p id="day3text">No dejo de imaginarte…</p>
@@ -142,31 +138,29 @@ transition:.3s;
 <button onclick="goMenu()">⬅️</button>
 </section>
 
+<!-- ========= DÍA 4 ========= -->
 <section id="day4">
 <h2>🔥 ¿Cuánto me deseas?</h2>
 
 <input type="range" id="slider" min="0" max="100" value="0">
-
 <p id="sliderText">empieza…</p>
 
-<button id="openPhotoBtn" style="display:none;" onclick="showHiddenPhoto()">
-Ver lo que provocaste 😏
-</button>
-
-<div id="hiddenPhoto" style="display:none;margin-top:15px;">
-<img src="foto_secreta.jpg" style="width:220px;border-radius:15px;">
-<p>sabía que ibas a llegar hasta aquí 🔥</p>
+<div id="hiddenPhoto">
+<img src="foto_secreta.jpg" width="220">
+<p>sabía que ibas a llegar hasta aquí 😏🔥</p>
 </div>
 
 <button onclick="goMenu()">⬅️</button>
 </section>
 
+<!-- ========= DÍA 5 ========= -->
 <section id="day5">
 <h2>🧩 Ármame…</h2>
 <div id="puzzle"></div>
 <button onclick="goMenu()">⬅️</button>
 </section>
 
+<!-- ========= DÍA 6 ========= -->
 <section id="day6">
 <h2>💻 Cita conmigo</h2>
 <button onclick="date('peli')">🍿</button>
@@ -176,9 +170,9 @@ Ver lo que provocaste 😏
 <button onclick="goMenu()">⬅️</button>
 </section>
 
+<!-- ========= DÍA 7 ========= -->
 <section id="day7">
 <h2>🔐 Solo para ti</h2>
-<p>Pista: lo dijimos en la noche 🌙</p>
 <input id="pass">
 <button onclick="login()">Entrar</button>
 
@@ -194,31 +188,31 @@ Ver lo que provocaste 😏
 
 <script>
 
-// navegación
+/* ========= NAVEGACIÓN ========= */
 function showDay(n){hideAll();document.getElementById("day"+n).classList.add("active");}
 function next(id){hideAll();document.getElementById(id).classList.add("active");}
 function goMenu(){hideAll();document.getElementById("menu").classList.add("active");}
 function hideAll(){document.querySelectorAll("section").forEach(s=>s.classList.remove("active"));}
 
-// mapa
+/* ========= MAPA ========= */
 let map=L.map('map').setView([24.78,-107.35],5);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 distanceText.innerText="aunque estemos lejos… ❤️";
 
-// 🔥 MENSAJES (sin undefined)
+/* ========= 200 MENSAJES ========= */
 const messages = [];
 for(let i=1;i<=200;i++){
-messages.push(`mensaje especial #${i} ❤️`);
+messages.push(`pensamiento único #${i} contigo ❤️`);
 }
 
-// ❤️ clicks
+/* ========= CORAZÓN ========= */
 let clicks=0;
 heart.onclick=(e)=>{
 clicks++;
 count.innerText=clicks;
-msgExtra.innerText = messages[(clicks-1) % messages.length];
+msgExtra.innerText = messages[(clicks-1)%messages.length];
 
-// efecto corazones
+/* efecto */
 let h=document.createElement('div');
 h.className='heartFloat';
 h.innerText='❤️';
@@ -228,25 +222,23 @@ document.body.appendChild(h);
 setTimeout(()=>h.remove(),2000);
 };
 
-// slider
+/* ========= SLIDER ========= */
 slider.oninput=function(){
 let v=this.value;
 this.style.background=`linear-gradient(to right,#ff2e63 ${v}%,#333 ${v}%)`;
 
-let textos=["empieza","ya empezó","se siente","te estás soltando","esto cambia","ya no es inocente","te gusta","ya no te controlas","🔥 intenso","casi","💥 máximo"];
-sliderText.innerText=textos[Math.floor(v/10)];
+sliderText.innerText=[
+"empieza","ya empezó","se siente","te estás soltando",
+"esto cambia","ya no es inocente","te gusta",
+"ya no te controlas","🔥 intenso","casi","💥 máximo"
+][Math.floor(v/10)];
 
 if(v==100){
-openPhotoBtn.style.display="block";
 hiddenPhoto.style.display="block";
 }
 };
 
-function showHiddenPhoto(){
-hiddenPhoto.style.display="block";
-}
-
-// login
+/* ========= LOGIN ========= */
 function login(){
 if(pass.value=="Noah Losano Villegas"){
 gallery.style.display="block";
