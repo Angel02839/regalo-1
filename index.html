@@ -4,32 +4,115 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Modo DIOS 💖</title>
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
 <style>
-body{margin:0;font-family:sans-serif;background:#000;color:white;text-align:center;overflow:hidden}
+body{
+margin:0;
+font-family:sans-serif;
+background:#000;
+color:white;
+text-align:center;
+overflow:hidden;
+transition:.5s;
+}
+
 section{display:none;padding:30px}
 .active{display:block}
-button{padding:12px 25px;margin:10px;border:none;border-radius:15px;background:#ff2e63;color:white;font-size:16px;cursor:pointer;transition:.3s}
+
+button{
+padding:12px 25px;
+margin:10px;
+border:none;
+border-radius:15px;
+background:#ff2e63;
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:.3s;
+}
 button:hover{transform:scale(1.1)}
-#heart{font-size:80px;cursor:pointer;transition:.2s}
+
+#heart{
+font-size:80px;
+cursor:pointer;
+transition:.2s;
+}
 #heart:active{transform:scale(1.4)}
+
 #slider{width:80%}
+
 .fade{animation:fade .6s}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 
 /* estrellas */
-.star{position:absolute;width:2px;height:2px;background:white;animation:blink 2s infinite}
-@keyframes blink{0%,100%{opacity:0}50%{opacity:1}}
+.star{
+position:absolute;
+width:2px;
+height:2px;
+background:white;
+animation:blink 2s infinite;
+}
+@keyframes blink{
+0%,100%{opacity:0}
+50%{opacity:1}
+}
 
 /* corazones */
-.heartFloat{position:fixed;color:#ff2e63;font-size:20px;animation:float 2s linear}
-@keyframes float{to{transform:translateY(-200px);opacity:0}}
+.heartFloat{
+position:fixed;
+color:#ff2e63;
+font-size:20px;
+animation:float 2s linear;
+}
+@keyframes float{
+to{transform:translateY(-200px);opacity:0}
+}
 
-#map{height:300px;border-radius:15px;margin:20px}
+#map{
+height:300px;
+border-radius:15px;
+margin:20px;
+}
+
+/* REVEAL PRO */
+#overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.95);
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+opacity:0;
+pointer-events:none;
+transition:.5s;
+z-index:999;
+}
+
+#secretImg{
+width:280px;
+border-radius:20px;
+transform:scale(0.5);
+opacity:0;
+transition:.5s;
+}
+
+#secretText{
+margin-top:20px;
+opacity:0;
+transition:.5s;
+}
 </style>
 </head>
+
 <body>
 
+<!-- 🌍 INICIO -->
 <section id="start" class="active fade">
 <h1>🌍 Aunque estemos lejos</h1>
 <div id="map"></div>
@@ -37,38 +120,59 @@ button:hover{transform:scale(1.1)}
 <button onclick="next('extraño')">Ven conmigo</button>
 </section>
 
+<!-- 💓 CORAZÓN -->
 <section id="extraño" class="fade">
 <h1>💓 Tócame cuando me extrañes</h1>
 <div id="heart" onclick="countClicks(event)">❤️</div>
 <p id="count">0</p>
 <p id="msgExtra"></p>
-<button onclick="next('slider')">Siguiente</button>
+<button onclick="next('sliderSec')">Siguiente</button>
 </section>
 
-<section id="slider" class="fade">
+<!-- 🔥 SLIDER -->
+<section id="sliderSec" class="fade">
 <h1>🔥 ¿Cuánto me deseas?</h1>
-<input type="range" min="0" max="100" oninput="updateSlider()">
+
+<input type="range" min="0" max="100" id="slider" oninput="updateSlider()">
 <p id="sliderText"></p>
+
+<button id="openBtn" style="display:none;" onclick="openSecret()">
+🔥 Abrir 🔥
+</button>
+
 <button onclick="next('final')">Final</button>
 </section>
 
+<!-- 💖 FINAL -->
 <section id="final" class="fade">
 <h1>💖 Siempre tú</h1>
 <p>Esto es solo el inicio de todo lo que quiero contigo ❤️</p>
 </section>
 
+<!-- 💥 OVERLAY -->
+<div id="overlay">
+<img src="tu_foto.jpg" id="secretImg">
+<p id="secretText">solo tú puedes verme así 😏</p>
+</div>
+
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
+
+// navegación
 function next(id){
 document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 }
 
 // 🌍 MAPA
-let city1=[24.781451, -107.353889];
+let city1=[24.781451,-107.353889];
 let city2=[19.8646463,-100.8208776];
+
 let map=L.map('map').setView(city1,5);
+
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
 L.marker(city1).addTo(map);
 L.marker(city2).addTo(map);
 L.polyline([city1,city2],{color:'red'}).addTo(map);
@@ -76,7 +180,9 @@ L.polyline([city1,city2],{color:'red'}).addTo(map);
 let dx=city1[0]-city2[0];
 let dy=city1[1]-city2[1];
 let dist=Math.sqrt(dx*dx+dy*dy)*111;
-document.getElementById('distanceText').innerText=`Estamos a ${Math.floor(dist)} km… pero te siento aquí ❤️`;
+
+document.getElementById('distanceText').innerText =
+`Estamos a ${Math.floor(dist)} km… pero te siento aquí ❤️`;
 
 // ⭐ estrellas
 for(let i=0;i<100;i++){
@@ -87,86 +193,84 @@ s.style.left=Math.random()*100+'%';
 document.body.appendChild(s);
 }
 
-// 💓 200 MENSAJES ÚNICOS (romántico → hot)
-const messages = [];
-
-// 💖 1–60 (romántico)
-const romantic = [
-"me haces sonreír ❤️","me encantas ❤️","pienso en ti ❤️","me gustas mucho ❤️","eres especial ❤️",
-"me haces feliz ❤️","me encanta hablar contigo ❤️","te extraño ❤️","me importas ❤️","me haces bien ❤️",
-"me haces suspirar ❤️","me gustas más cada día ❤️","te pienso siempre ❤️","me encantas demasiado ❤️",
-"me haces sentir único ❤️","me encantas de verdad ❤️","me haces falta ❤️","no dejo de pensarte ❤️",
-"me haces sonreír sin razón ❤️","me encantas más de lo normal ❤️"
-];
-
-// 😏 61–120 (coqueto)
-const flirty = [
-"me gustas demasiado 😏","me traes pensando en ti 😏","me provocas 😏","te quiero cerca 😏",
-"no dejo de imaginarte 😏","me traes loco 😏","quiero abrazarte 😏","quiero besarte 😏",
-"me haces querer más 😏","me estás provocando 😏","no dejo de pensar en besarte 😏",
-"te quiero conmigo 😏","me haces desearte 😏","me traes con ganas 😏","quiero tenerte cerca 😏",
-"me encantas demasiado 😏","me vuelves loco 😏","me haces imaginar cosas 😏"
-];
-
-// 🔥 121–170 (intenso)
-const hot = [
-"me haces desearte 🔥","no dejo de imaginarte conmigo 🔥","quiero sentirte cerca 🔥",
-"me traes con muchas ganas 🔥","no aguanto las ganas 🔥","te quiero conmigo 🔥",
-"me vuelves loco 🔥","quiero perderme contigo 🔥","me tienes pensando en ti 🔥",
-"quiero besarte sin parar 🔥","me encantas demasiado 🔥","te deseo cada vez más 🔥",
-"no dejo de pensarte 🔥","quiero todo contigo 🔥","me tienes mal 🔥"
-];
-
-// 🥵 171–200 (muy intenso pero no explícito)
-const veryHot = [
-"ya no me aguanto 😏🔥","me tienes pensando en ti todo el tiempo 🔥",
-"quiero estar pegado a ti 🔥","no dejo de imaginarte conmigo 🔥",
-"te deseo demasiado 🔥","me traes completamente loco 🔥",
-"quiero tenerte cerca ya 🔥","no aguanto las ganas de verte 🔥",
-"me provocas muchísimo 🔥","quiero perderme contigo 🔥",
-"me tienes mal de lo mucho que me gustas 🔥",
-"no dejo de pensar en tenerte aquí 🔥",
-"quiero sentirte más cerca 🔥",
-"me traes con una necesidad increíble 🔥"
-];
-
-// GENERAR 200 MENSAJES EXACTOS
+// 💓 MENSAJES 200 PROGRESIVOS
+let messages=[];
 for(let i=0;i<200;i++){
-  if(i<60){
-    messages.push(romantic[i % romantic.length]);
-  }else if(i<120){
-    messages.push(flirty[i % flirty.length]);
-  }else if(i<170){
-    messages.push(hot[i % hot.length]);
-  }else{
-    messages.push(veryHot[i % veryHot.length]);
-  }
+if(i<60) messages.push("me encantas ❤️");
+else if(i<120) messages.push("me provocas 😏");
+else messages.push("te deseo 🔥");
 }
 
 let clicks=0;
+
 function countClicks(e){
 clicks++;
+
 document.getElementById('count').innerText=clicks;
 document.getElementById('msgExtra').innerText=messages[clicks-1] || messages[199];
 
+// corazones flotando
 let h=document.createElement('div');
 h.className='heartFloat';
 h.innerText='❤️';
 h.style.left=e.clientX+'px';
 h.style.top=e.clientY+'px';
 document.body.appendChild(h);
+
 setTimeout(()=>h.remove(),2000);
 }
 
+// 🔥 SLIDER
 function updateSlider(){
-let val=event.target.value;
+let val=document.getElementById('slider').value;
 let text="";
-if(val<25) text="poquito 😢";
-else if(val<50) text="ya se siente 😏";
-else if(val<75) text="me estás pensando...";
-else text="ya no te aguantas 🔥";
+
+if(val<10) text="apenas poquito 😅";
+else if(val<30) text="ya me estás pensando 😏";
+else if(val<50) text="te estás soltando...";
+else if(val<70) text="ya me deseas 😏";
+else if(val<90) text="ya no te aguantas...";
+else if(val<100) text="ya estás totalmente dentro 😏🔥";
+else text="ya no te controlas 🔥";
+
 document.getElementById('sliderText').innerText=text;
+
+if(val==100){
+document.getElementById('openBtn').style.display="inline-block";
 }
+}
+
+// 💥 REVEAL PRO
+function openSecret(){
+
+let overlay=document.getElementById('overlay');
+let img=document.getElementById('secretImg');
+let text=document.getElementById('secretText');
+
+overlay.style.opacity="1";
+overlay.style.pointerEvents="all";
+
+setTimeout(()=>{
+img.style.transform="scale(1)";
+img.style.opacity="1";
+},200);
+
+setTimeout(()=>{
+text.style.opacity="1";
+},500);
+
+// zoom fondo
+document.body.style.transform="scale(1.05)";
+}
+
+// cerrar al tocar
+document.getElementById('overlay').onclick=function(){
+this.style.opacity="0";
+this.style.pointerEvents="none";
+document.body.style.transform="scale(1)";
+}
+
 </script>
+
 </body>
 </html>
